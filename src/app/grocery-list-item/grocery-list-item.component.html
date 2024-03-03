@@ -1,0 +1,30 @@
+<div class="grocery-item-name">{{data.name}}</div>
+<div class="supermarket-items-container">
+    <div *ngFor="let item of getSupermarketDataArray()" class="supermarket-item"
+        [class]="supermarketClassList[item.supermarket]">
+        <div class="grocery-item-content">
+            <div class="">{{item.content}}</div>
+        </div>
+        <div class="grocery-item-price">
+            <div class="">
+                <div>${{item.dollars}}.{{item.cents}}</div>
+            </div>
+        </div>
+        <div class="grocery-item-logo ">
+            <ng-container [ngSwitch]="item.supermarket">
+                <app-packn-save-svg *ngSwitchCase="0" class="price-logo"></app-packn-save-svg>
+                <app-countdown-svg *ngSwitchCase="1" class="price-logo"></app-countdown-svg>
+                <app-new-world-svg *ngSwitch="2" class="price-logo"></app-new-world-svg>
+            </ng-container>
+        </div>
+    </div>
+</div>
+<div class="grocery-item-x">
+    <svg width="24px" height="24px" stroke-width="1.5" viewBox="0 0 24 24" fill="none"
+        xmlns="http://www.w3.org/2000/svg">
+        <path
+            d="M6.75827 17.2426L12.0009 12M17.2435 6.75736L12.0009 12M12.0009 12L6.75827 6.75736M12.0009 12L17.2435 17.2426"
+            stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        </path>
+    </svg>
+</div>

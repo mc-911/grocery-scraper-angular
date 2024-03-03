@@ -1,0 +1,29 @@
+<div class="supermarket-card">
+    <div class="supermarket-card-header">
+        <div class="supermarket-card-name">{{data.name}}
+        </div>
+        <div class="supermarket-card-subtitle">{{data.subtitle}}</div>
+    </div>
+    <div class="supermarket-card-image">
+        <img class="paknsave-image" [src]="data.imageUrl" />
+    </div>
+    <div class="supermarket-card-info">
+        <div class="supermarket-card-price">
+            <div class="supermarket-card-price-dollar">
+                ${{data.dollars}}
+            </div>
+            <div class="supermarket-card-price-cent">
+                {{data.cents}}
+            </div>
+        </div>
+        <div class="supermarket-card-quantity ">
+            <input class="supermarket-card-quantity-input" type="number" />
+            <div class="supermarket-card-metric">
+                {{data.metric}}
+            </div>
+        </div>
+    </div>
+    <div class="supermarket-card-select-btn" [class]="isSelected() ? 'selected' : ''" (click)="selectItem()">
+        {{isSelected() ? 'UNSELECT' : 'SELECT'}}
+    </div>
+</div>

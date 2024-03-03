@@ -1,0 +1,101 @@
+<div class="grocerylist-container">
+    <div class="grocerylist">
+        <div class="grocerylist-title">Grocery List</div>
+        <div class="grocerylist-items-container">
+            <app-grocery-list-item *ngFor="let item of groceryListItems" [data]="item" />
+        </div>
+        <div class="grocerylist-add-btn" (click)="toggleAddGroceryListModal()">
+            <svg stroke-width="1.5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" color="#000000">
+                <path d="M6 12H12M18 12H12M12 12V6M12 12V18" stroke="#000000" stroke-width="1.5" stroke-linecap="round"
+                    stroke-linejoin="round"></path>
+            </svg>
+        </div>
+        <div class="grocerylist-price-container"></div>
+    </div>
+    <div class="search-container">
+        <div class="search-section">
+            <div class="search-bar-container">
+                <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                    style="fill: rgba(0, 0, 0, 1);">
+                    <path
+                        d="M10 18a7.952 7.952 0 0 0 4.897-1.688l4.396 4.396 1.414-1.414-4.396-4.396A7.952 7.952 0 0 0 18 10c0-4.411-3.589-8-8-8s-8 3.589-8 8 3.589 8 8 8zm0-14c3.309 0 6 2.691 6 6s-2.691 6-6 6-6-2.691-6-6 2.691-6 6-6z">
+                    </path>
+                </svg>
+                <input type="text" class="search-bar" (keyup.enter)="search()" [formControl]="searchQuery" />
+            </div>
+            <div class="supermarket-btn-container">
+                <div class="paknsave-bg supermarket-btn"
+                    [class]="selectedSupermarkets.includes('paknsave') ? '' : 'disabled' "
+                    (mouseup)="toggleSupermarket($event, 'paknsave')">
+                    <app-packn-save-svg class="price-logo"></app-packn-save-svg>
+                </div>
+                <div class="countdown-bg supermarket-btn"
+                    [class]="selectedSupermarkets.includes('countdown') ? '' : 'disabled' "
+                    (mouseup)="toggleSupermarket($event, 'countdown')">
+                    <app-countdown-svg class="price-logo"></app-countdown-svg>
+                </div>
+                <div class="newworld-bg supermarket-btn"
+                    [class]="selectedSupermarkets.includes('newworld') ? '' : 'disabled' "
+                    (mouseup)="toggleSupermarket($event, 'newworld')">
+                    <app-new-world-svg class="price-logo"></app-new-world-svg>
+                </div>
+            </div>
+        </div>
+        <ng-container [ngSwitch]="searchState">
+            <div *ngSwitchCase="0" class="enter-query-message">Enter your search query above</div>
+            <div *ngSwitchCase="1" class="spinner-container">
+                <svg class="spin" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                    style="fill: rgba(0, 0, 0, 1);">
+                    <path
+                        d="M12 22c5.421 0 10-4.579 10-10h-2c0 4.337-3.663 8-8 8s-8-3.663-8-8c0-4.336 3.663-8 8-8V2C6.579 2 2 6.58 2 12c0 5.421 4.579 10 10 10z">
+                    </path>
+                </svg>
+            </div>
+            <div *ngSwitchCase="2" class="results-container">
+                <div *ngIf="selectedSupermarkets.includes('paknsave')" class="supermarket-container">
+                    <div class="supermarket-name">PAK'nSAVE</div>
+                    <div class="supermarket-results-container">
+                        <app-supermarket-item-card *ngFor="let item of supermarketDataDictonary['paknsave']"
+                            [selectedGroceryListItem]="selectedGroceryListItem" [supermarket]="0" [data]="item" />
+                    </div>
+                </div>
+                <div *ngIf="selectedSupermarkets.includes('countdown')" class="supermarket-container">
+                    <div class="supermarket-name">Countdown</div>
+                    <div class="supermarket-results-container">
+                        <app-supermarket-item-card *ngFor="let item of supermarketDataDictonary['countdown']"
+                            [selectedGroceryListItem]="selectedGroceryListItem" [supermarket]="1" [data]="item" />
+                    </div>
+                </div>
+                <div *ngIf="selectedSupermarkets.includes('newworld')" class="supermarket-container">
+                    <div class="supermarket-name">New World</div>
+                    <div class="supermarket-results-container">
+                        <app-supermarket-item-card *ngFor="let item of supermarketDataDictonary['newworld']"
+                            [selectedGroceryListItem]="selectedGroceryListItem" [supermarket]="2" [data]="item" />
+                    </div>
+                </div>
+            </div>
+        </ng-container>
+    </div>
+    <dialog id="addGroceryListItemModal">
+        <div class="addGroceryListItemFlexContainer">
+            <div class="addGroceryListItemInputSection">
+                <div class="input-container">
+                    <label>Name</label>
+                    <input [formControl]="newGroceryListItemName" id="groceryListItemName" type="text" />
+                </div>
+                <div class="input-container">
+                    <label>Search Query</label>
+                    <input [formControl]="newGroceryListSearchQuery" id="groceryListItemSearchQuery" type="text" />
+                </div>
+            </div>
+            <div class="addGroceryListItemFooterSection">
+                <div (click)="toggleAddGroceryListModal()">
+                    Close
+                </div>
+                <div (click)="addGroceryListItem()">
+                    Add
+                </div>
+            </div>
+        </div>
+    </dialog>
+</div>
