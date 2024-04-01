@@ -1,4 +1,4 @@
-.dropdown {
+:host {
     border: 1px solid black;
     height: 35px;
     display: flex;
@@ -43,7 +43,6 @@
     align-items: center;
     cursor: pointer;
     user-select: none;
-    background-color: inherit;
 }
 
 .dropdown-options>*:hover,
