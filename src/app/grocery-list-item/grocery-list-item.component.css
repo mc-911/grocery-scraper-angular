@@ -16,7 +16,7 @@
     display: flex;
     flex-direction: row;
     width: 98%;
-    border: 1px solid black;
+    border: 2px solid var(--border-color);
     border-radius: 10px;
     /* border-top-right-radius: 0px;
     border-bottom-right-radius: 0px; */
@@ -24,12 +24,14 @@
     overflow: hidden;
     min-height: 36px;
     box-sizing: border-box;
+    cursor: pointer;
 }
 
 .supermarket-items-container {
     width: 65%;
     display: flex;
     flex-direction: column;
+    border-right: 2px solid var(--border-color);
 }
 
 .grocery-item-x {
@@ -47,7 +49,7 @@
 }
 
 .grocery-item-name {
-    border-right: 1px solid black;
+    border-right: 2px solid var(--border-color);
     width: 35%;
     display: flex;
     flex-direction: column;
@@ -57,7 +59,7 @@
 }
 
 .grocery-item-content {
-    border-right: 1px solid black;
+    border-right: 2px solid var(--border-color);
     width: calc(60% + 50px);
     display: flex;
     flex-direction: column;

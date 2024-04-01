@@ -2,7 +2,10 @@
     <div class="grocerylist">
         <div class="grocerylist-title">Grocery List</div>
         <div class="grocerylist-items-container">
-            <app-grocery-list-item *ngFor="let item of groceryListItems" [data]="item" />
+            <app-grocery-list-item *ngFor="let item of groceryListItems; index as i" [data]="item"
+                (removeItemEvent)="removeGroceryListItem($event)" [index]="i"
+                (selectItemEvent)="selectGroceryListItem($event)"
+                [borderColor]="item == selectedGroceryListItem ? 'green' : 'black'" />
         </div>
         <div class="grocerylist-add-btn" (click)="toggleAddGroceryListModal()">
             <svg stroke-width="1.5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" color="#000000">
@@ -10,9 +13,9 @@
                     stroke-linejoin="round"></path>
             </svg>
         </div>
-        <div class="grocerylist-price-container"></div>
+        <div class="grocerylist-price-container">Total: {{getFormattedMinTotal()}}</div>
     </div>
-    <div class="search-container">
+    <div class="search-container" *ngIf="selectedGroceryListItem != null; else noSelectedGroceryListItem">
         <div class="search-section">
             <div class="search-bar-container">
                 <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
@@ -23,26 +26,35 @@
                 </svg>
                 <input type="text" class="search-bar" (keyup.enter)="search()" [formControl]="searchQuery" />
             </div>
-            <div class="supermarket-btn-container">
-                <div class="paknsave-bg supermarket-btn"
-                    [class]="selectedSupermarkets.includes('paknsave') ? '' : 'disabled' "
-                    (mouseup)="toggleSupermarket($event, 'paknsave')">
-                    <app-packn-save-svg class="price-logo"></app-packn-save-svg>
+            <div class="search-options-container">
+
+                <div class="supermarket-btn-container">
+                    <div class="paknsave-bg supermarket-btn"
+                        [class]="selectedSupermarkets.includes('paknsave') ? '' : 'disabled' "
+                        (mouseup)="toggleSupermarket($event, 'paknsave')">
+                        <app-packn-save-svg class="price-logo"></app-packn-save-svg>
+                    </div>
+                    <div class="countdown-bg supermarket-btn"
+                        [class]="selectedSupermarkets.includes('countdown') ? '' : 'disabled' "
+                        (mouseup)="toggleSupermarket($event, 'countdown')">
+                        <app-countdown-svg class="price-logo"></app-countdown-svg>
+                    </div>
+                    <div class="newworld-bg supermarket-btn"
+                        [class]="selectedSupermarkets.includes('newworld') ? '' : 'disabled' "
+                        (mouseup)="toggleSupermarket($event, 'newworld')">
+                        <app-new-world-svg class="price-logo"></app-new-world-svg>
+                    </div>
                 </div>
-                <div class="countdown-bg supermarket-btn"
-                    [class]="selectedSupermarkets.includes('countdown') ? '' : 'disabled' "
-                    (mouseup)="toggleSupermarket($event, 'countdown')">
-                    <app-countdown-svg class="price-logo"></app-countdown-svg>
-                </div>
-                <div class="newworld-bg supermarket-btn"
-                    [class]="selectedSupermarkets.includes('newworld') ? '' : 'disabled' "
-                    (mouseup)="toggleSupermarket($event, 'newworld')">
-                    <app-new-world-svg class="price-logo"></app-new-world-svg>
+                <div class="sort-by-category-container">
+                    <app-dropdown (selectOptionEvent)="selectCategory($event)" [options]="categories"></app-dropdown>
+                    <app-dropdown (selectOptionEvent)="selectSort($event)" [options]="sortingOptions"></app-dropdown>
                 </div>
             </div>
         </div>
-        <ng-container [ngSwitch]="searchState">
-            <div *ngSwitchCase="0" class="enter-query-message">Enter your search query above</div>
+        <ng-container [ngSwitch]="selectedGroceryListItem.searchState">
+            <div *ngSwitchCase="0" class="enter-query-message">Enter your search query for
+                "{{selectedGroceryListItem.name}}"
+            </div>
             <div *ngSwitchCase="1" class="spinner-container">
                 <svg class="spin" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
                     style="fill: rgba(0, 0, 0, 1);">
@@ -52,30 +64,38 @@
                 </svg>
             </div>
             <div *ngSwitchCase="2" class="results-container">
-                <div *ngIf="selectedSupermarkets.includes('paknsave')" class="supermarket-container">
+                <div *ngIf="selectedSupermarkets.includes('paknsave') && selectedGroceryListItem.results"
+                    class="supermarket-container">
                     <div class="supermarket-name">PAK'nSAVE</div>
                     <div class="supermarket-results-container">
-                        <app-supermarket-item-card *ngFor="let item of supermarketDataDictonary['paknsave']"
+                        <app-supermarket-item-card *ngFor="let item of selectedGroceryListItem.results['paknsave']"
                             [selectedGroceryListItem]="selectedGroceryListItem" [supermarket]="0" [data]="item" />
                     </div>
                 </div>
-                <div *ngIf="selectedSupermarkets.includes('countdown')" class="supermarket-container">
+                <div *ngIf="selectedSupermarkets.includes('countdown') && selectedGroceryListItem.results"
+                    class="supermarket-container">
                     <div class="supermarket-name">Countdown</div>
                     <div class="supermarket-results-container">
-                        <app-supermarket-item-card *ngFor="let item of supermarketDataDictonary['countdown']"
+                        <app-supermarket-item-card *ngFor="let item of selectedGroceryListItem.results['countdown']"
                             [selectedGroceryListItem]="selectedGroceryListItem" [supermarket]="1" [data]="item" />
                     </div>
                 </div>
-                <div *ngIf="selectedSupermarkets.includes('newworld')" class="supermarket-container">
+                <div *ngIf="selectedSupermarkets.includes('newworld') && selectedGroceryListItem.results"
+                    class="supermarket-container">
                     <div class="supermarket-name">New World</div>
                     <div class="supermarket-results-container">
-                        <app-supermarket-item-card *ngFor="let item of supermarketDataDictonary['newworld']"
+                        <app-supermarket-item-card *ngFor="let item of selectedGroceryListItem.results['newworld']"
                             [selectedGroceryListItem]="selectedGroceryListItem" [supermarket]="2" [data]="item" />
                     </div>
                 </div>
             </div>
         </ng-container>
     </div>
+    <ng-template #noSelectedGroceryListItem>
+        <div class="noSelectedGroceryListItem">
+            Add or Select a Grocery Item to start searching
+        </div>
+    </ng-template>
     <dialog id="addGroceryListItemModal">
         <div class="addGroceryListItemFlexContainer">
             <div class="addGroceryListItemInputSection">

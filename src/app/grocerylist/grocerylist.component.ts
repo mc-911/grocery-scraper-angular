@@ -7,6 +7,7 @@ import axios, { AxiosError, AxiosResponse } from 'axios';
 import { GroceryListItemComponent, GroceryListItemData, SupermarketEnum } from '../grocery-list-item/grocery-list-item.component';
 import { ReactiveFormsModule, FormControl } from '@angular/forms';
 import { NewWorldSvgComponent } from '../new-world-svg/new-world-svg.component';
+import { DropdownComponent } from '../dropdown/dropdown.component';
 
 export type GroceryItemData = {
   name: string,
@@ -18,7 +19,7 @@ export type GroceryItemData = {
   productUrl: string
   productCode: number,
 }
-enum searchStateEnum {
+export enum searchStateEnum {
   NO_SEARCH,
   LOADING,
   SEARCHED
@@ -26,32 +27,40 @@ enum searchStateEnum {
 @Component({
   selector: 'app-grocerylist',
   standalone: true,
-  imports: [CountdownSvgComponent, PacknSaveSvgComponent, SupermarketItemCardComponent, NgFor, NgSwitch, NgSwitchCase, NgIf, ReactiveFormsModule, GroceryListItemComponent, NewWorldSvgComponent],
+  imports: [CountdownSvgComponent, PacknSaveSvgComponent, SupermarketItemCardComponent, NgFor, NgSwitch, NgSwitchCase, NgIf, ReactiveFormsModule, GroceryListItemComponent, NewWorldSvgComponent, DropdownComponent],
   templateUrl: './grocerylist.component.html',
   styleUrl: './grocerylist.component.css'
 })
 export class GrocerylistComponent {
-  groceryListItems: GroceryListItemData[] = [{ name: "Test Item", SupermarketDataDict: {} }]
+  groceryListItems: GroceryListItemData[] = [{ name: "Test Item", SupermarketDataDict: {}, searchState: searchStateEnum.NO_SEARCH }]
   selectedGroceryListItem: GroceryListItemData | null = null
-  supermarketDataDictonary: { [key: string]: GroceryItemData[] } = {}
   selectedSupermarkets: string[] = ["paknsave"]
-  order = "ASC"
-  category = "GENERAL"
-  searchState = searchStateEnum.NO_SEARCH;
   searchQuery = new FormControl('');
   newGroceryListItemName = new FormControl('')
   newGroceryListSearchQuery = new FormControl('')
+  categories = [{ name: 'General', value: 'GENERAL' }, { name: 'Beef', value: 'BEEF' }, { name: 'Lamb', value: 'LAMB' }, { name: 'Pork', value: 'PORK' }, { name: 'Chicken', value: 'CHICKEN' }, { name: 'Vegetable', value: 'VEGETABLE' }, { name: 'Fruit', value: 'FRUIT' }, { name: 'Eggs', value: 'EGGS' }]
+  sortingOptions = [{ name: 'Price - Low to High', value: 'ASC' }, { name: 'Price - High to Low', value: 'DESC' }]
+  selectedCategory = ''
+  selectedSort = ''
+  ngOnInit() {
+    this.selectedCategory = this.categories[0].value
+    this.selectedSort = this.sortingOptions[0].value
+  }
   public search() {
     if (this.searchQuery.value) {
-      this.getGrocerySearch(this.searchQuery.value, this.selectedSupermarkets, this.order, this.category)
+      this.getGrocerySearch(this.searchQuery.value, this.selectedSupermarkets, this.selectedSort, this.selectedCategory)
     }
   }
   public getGrocerySearch(query: string, selectedSupermarkets: string[], order: string, category: string) {
-    this.searchState = searchStateEnum.LOADING;
+    if (this.selectedGroceryListItem) {
+      this.selectedGroceryListItem.searchState = searchStateEnum.LOADING;
+    }
     axios.get(`http://localhost:5000/grocery-search?query=${query}&supermarket=${selectedSupermarkets}&order=${order}&category=${category}`).then((response: AxiosResponse) => {
-      this.supermarketDataDictonary = response.data
+      if (this.selectedGroceryListItem) {
+        this.selectedGroceryListItem.results = response.data
+        this.selectedGroceryListItem.searchState = searchStateEnum.SEARCHED;
+      }
       console.log(response.data)
-      this.searchState = searchStateEnum.SEARCHED;
     }).catch((error: AxiosError) => {
       console.log(error)
     })
@@ -79,11 +88,10 @@ export class GrocerylistComponent {
   }
   public addGroceryListItem() {
     if (this.newGroceryListItemName.value && this.newGroceryListSearchQuery.value) {
-      this.selectedGroceryListItem = { name: this.newGroceryListItemName.value, SupermarketDataDict: {} }
+      this.selectedGroceryListItem = { name: this.newGroceryListItemName.value, SupermarketDataDict: {}, searchState: searchStateEnum.NO_SEARCH }
       console.log(this.selectedGroceryListItem)
       this.groceryListItems.push(this.selectedGroceryListItem)
       this.searchQuery.setValue(this.newGroceryListSearchQuery.value)
-      this.search()
       this.newGroceryListItemName.setValue('')
       this.newGroceryListSearchQuery.setValue('')
       this.toggleAddGroceryListModal()
@@ -92,4 +100,48 @@ export class GrocerylistComponent {
     }
   }
 
+  public calculateMinTotal() {
+    let total = 0;
+    for (let i = 0; i < this.groceryListItems.length; i++) {
+      const entries = Object.entries(
+        this.groceryListItems[i].SupermarketDataDict
+      )
+      if (entries.length > 0) {
+        console.log("Calculating min price for: ", this.groceryListItems[i].name)
+        const supermarketMinPricePair = entries.reduce((previousValue, currentValue) => ((currentValue[1].dollars + currentValue[1].cents / 100) < previousValue.price ? { "supermarket": currentValue[0], "price": currentValue[1].dollars + currentValue[1].cents / 100 } : previousValue), { "supermarket": entries[0][0], "price": entries[0][1].dollars + entries[0][1].cents / 100 })
+        total += supermarketMinPricePair.price;
+      }
+    }
+    return total;
+  }
+
+
+  public getFormattedMinTotal() {
+    const formatter = new Intl.NumberFormat("en-NZ", { style: 'currency', currency: 'NZD' })
+    return formatter.format(this.calculateMinTotal())
+  }
+
+  public printList() {
+    console.log(this.groceryListItems)
+  }
+
+  public removeGroceryListItem(index: number) {
+    console.log(index)
+    this.groceryListItems.splice(index, 1)
+    console.log(this.groceryListItems)
+    console.log("Removing item")
+  }
+
+  public selectGroceryListItem(index: number) {
+    this.selectedGroceryListItem = this.groceryListItems[index]
+    console.log(this.selectedGroceryListItem)
+  }
+
+  public selectCategory(value: string) {
+    this.selectedCategory = value
+  }
+
+  public selectSort(value: string) {
+    this.selectedSort = value;
+  }
 }

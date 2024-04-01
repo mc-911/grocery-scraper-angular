@@ -1,0 +1,6 @@
+<div class="dropdown">
+    <div class="selected-item" (click)="toggleDropdown()">{{options[selectedOption].name}}</div>
+    <div class="dropdown-options" [style]="optionsVisible ? 'display: flex' : ''">
+        <div *ngFor="let option of options; index as i" (click)="selectOption(i)">{{option.name}}</div>
+    </div>
+</div>
