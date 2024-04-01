@@ -8,6 +8,7 @@
     width: 150px;
     border-radius: 5px;
     position: relative;
+    background-color: white;
 }
 
 .dropdown-options {
@@ -18,13 +19,14 @@
     width: 100%;
     position: absolute;
     border: 1px solid black;
+    background-color: inherit;
 }
 
 .dropdown-options>* {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 35px;
+    height: 30px;
     width: 100%;
     display: flex;
     justify-content: center;
@@ -41,4 +43,11 @@
     align-items: center;
     cursor: pointer;
     user-select: none;
+    background-color: inherit;
+}
+
+.dropdown-options>*:hover,
+.selected {
+    background-color: gray;
+    color: white;
 }

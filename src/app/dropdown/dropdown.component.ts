@@ -1,5 +1,5 @@
 import { NgFor } from '@angular/common';
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, ElementRef } from '@angular/core';
 
 type dropdownItem = {
   name: string,
@@ -17,14 +17,27 @@ export class DropdownComponent {
   @Output() selectOptionEvent = new EventEmitter<string>();
   selectedOption = 0;
   optionsVisible = false;
+  callback = (event: Event) => {
+    const element = (event.target as HTMLElement);
+    const nativeElement = (this.el.nativeElement as HTMLElement)
+    if (!nativeElement.contains(element)) {
+      this.optionsVisible = false
+      window.removeEventListener("click", this.callback)
+    }
+  }
 
+  constructor(private el: ElementRef) { }
   public selectOption(index: number) {
     this.selectedOption = index;
     this.selectOptionEvent.emit(this.options[this.selectedOption].value)
-    this.optionsVisible = false;
+    this.toggleDropdown()
+    window.removeEventListener("click", this.callback)
   }
 
   public toggleDropdown() {
     this.optionsVisible = !this.optionsVisible;
+    if (this.optionsVisible) {
+      window.addEventListener("click", this.callback)
+    }
   }
 }

@@ -67,7 +67,6 @@ export class GrocerylistComponent {
   }
   public toggleSupermarket(event: Event, supermarket: string) {
     const index = this.selectedSupermarkets.findIndex((value) => value == supermarket)
-    console.log(index)
     if (index != -1) {
       this.selectedSupermarkets.splice(index, 1);
       (event.target as HTMLDivElement).classList.add('disabled')
