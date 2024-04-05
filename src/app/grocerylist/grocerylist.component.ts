@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ElementRef } from '@angular/core';
 import { CountdownSvgComponent } from '../countdown-svg/countdown-svg.component'
 import { PacknSaveSvgComponent } from '../packn-save-svg/packn-save-svg.component';
 import { SupermarketItemCardComponent } from '../supermarket-item-card/supermarket-item-card.component';
@@ -8,6 +8,7 @@ import { GroceryListItemComponent, GroceryListItemData, SupermarketEnum } from '
 import { ReactiveFormsModule, FormControl } from '@angular/forms';
 import { NewWorldSvgComponent } from '../new-world-svg/new-world-svg.component';
 import { DropdownComponent } from '../dropdown/dropdown.component';
+import { NotificationContainerComponent } from '../notification-container/notification-container.component';
 
 export type GroceryItemData = {
   name: string,
@@ -27,7 +28,7 @@ export enum searchStateEnum {
 @Component({
   selector: 'app-grocerylist',
   standalone: true,
-  imports: [CountdownSvgComponent, PacknSaveSvgComponent, SupermarketItemCardComponent, NgFor, NgSwitch, NgSwitchCase, NgIf, ReactiveFormsModule, GroceryListItemComponent, NewWorldSvgComponent, DropdownComponent],
+  imports: [CountdownSvgComponent, PacknSaveSvgComponent, SupermarketItemCardComponent, NgFor, NgSwitch, NgSwitchCase, NgIf, ReactiveFormsModule, GroceryListItemComponent, NewWorldSvgComponent, DropdownComponent, NotificationContainerComponent],
   templateUrl: './grocerylist.component.html',
   styleUrl: './grocerylist.component.css'
 })
@@ -42,13 +43,28 @@ export class GrocerylistComponent {
   sortingOptions = [{ name: 'Price - Low to High', value: 'ASC' }, { name: 'Price - High to Low', value: 'DESC' }]
   selectedCategory = ''
   selectedSort = ''
+  notifications: string[][] = []
+  mobile = false;
+  constructor(private el: ElementRef) {
+  }
+
   ngOnInit() {
     this.selectedCategory = this.categories[0].value
     this.selectedSort = this.sortingOptions[0].value
+    this.mobile = window.innerWidth <= 480;
   }
   public search() {
-    if (this.searchQuery.value) {
-      this.getGrocerySearch(this.searchQuery.value, this.selectedSupermarkets, this.selectedSort, this.selectedCategory)
+    let errors = [];
+    if (!this.searchQuery.value) {
+      errors.push('Please enter a seach query')
+    }
+    if (this.selectedSupermarkets.length === 0) {
+      errors.push('Please select a Supermarket')
+    }
+    if (errors.length == 0) {
+      this.getGrocerySearch(this.searchQuery.value!, this.selectedSupermarkets, this.selectedSort, this.selectedCategory)
+    } else {
+      this.addNotification(errors)
     }
   }
   public getGrocerySearch(query: string, selectedSupermarkets: string[], order: string, category: string) {
@@ -132,8 +148,19 @@ export class GrocerylistComponent {
   }
 
   public selectGroceryListItem(index: number) {
-    this.selectedGroceryListItem = this.groceryListItems[index]
+    if (
+      this.selectedGroceryListItem == this.groceryListItems[index]
+    ) {
+      this.selectedGroceryListItem = null;
+    } else {
+      this.selectedGroceryListItem = this.groceryListItems[index]
+    }
+
     console.log(this.selectedGroceryListItem)
+  }
+
+  public unselectGroceryListItem() {
+    this.selectedGroceryListItem = null;
   }
 
   public selectCategory(value: string) {
@@ -142,5 +169,12 @@ export class GrocerylistComponent {
 
   public selectSort(value: string) {
     this.selectedSort = value;
+  }
+
+  /**
+   * Creates a new Notification
+   */
+  public addNotification(messages: string[]) {
+    this.notifications.push(messages)
   }
 }

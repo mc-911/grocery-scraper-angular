@@ -1,0 +1,31 @@
+:host {
+    display: flex;
+    height: 130px;
+    width: 90%;
+    border: 1px solid black;
+    flex-direction: column;
+    pointer-events: all;
+    background-color: white;
+    justify-content: center;
+    align-items: center;
+}
+
+.notification-x-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: end;
+    width: 100%;
+}
+
+
+.notification-message {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-grow: 1;
+}
+
+.x-icon {
+    cursor: pointer;
+    height: 30px;
+}

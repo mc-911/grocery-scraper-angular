@@ -1,0 +1,15 @@
+:host {
+    position: absolute;
+    display: flex;
+    height: 90vh;
+    width: 300px;
+    box-sizing: border-box;
+    right: 10px;
+    bottom: 0px;
+    margin: auto;
+    flex-direction: column-reverse;
+    align-items: center;
+    pointer-events: none;
+    padding-bottom: 8px;
+    gap: 8px;
+}

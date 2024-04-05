@@ -2,7 +2,7 @@
     display: flex;
     flex-direction: row;
     width: 100%;
-    height: 34px;
+    height: 45px;
 }
 
 .price-logo {
@@ -26,6 +26,7 @@
     box-sizing: border-box;
     cursor: pointer;
 }
+
 
 .supermarket-items-container {
     width: 65%;
@@ -117,4 +118,33 @@
 
 .newworld-bg {
     background-color: #E11A2C;
+}
+
+@media (max-width: 480px) {
+    :host {
+        width: 100%;
+        border: none;
+        border-bottom: 1px solid var(--border-color);
+        border-radius: 0px;
+    }
+
+    .grocery-item-name {
+        border-right-width: 1px;
+    }
+
+    .supermarket-items-container {
+        border-right: none;
+    }
+
+    .grocery-item-x {
+        background-color: white;
+    }
+
+    .grocery-item-x * {
+        stroke: red;
+    }
+
+    .supermarket-item {
+        height: 44.67px;
+    }
 }
