@@ -15,7 +15,7 @@
                 ${{data.dollars}}
             </div>
             <div class="supermarket-card-price-cent">
-                {{data.cents}}
+                {{data.cents + '0'.repeat(2 - data.cents.toString(10).length)}}
             </div>
         </div>
         <div class="supermarket-card-quantity ">

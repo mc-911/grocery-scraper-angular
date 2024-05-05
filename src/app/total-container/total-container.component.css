@@ -1,0 +1,21 @@
+:host {
+    display: flex;
+    flex-direction: row;
+    height: 80px;
+    border-top: 1px solid black;
+    width: 100%;
+    align-items: center;
+    justify-content: space-between;
+    box-sizing: border-box;
+    padding-left: 24px;
+    padding-right: 24px;
+}
+
+.total-price {
+    font-size: xx-large;
+}
+
+.cog {
+    height: 50px;
+    cursor: pointer;
+}

@@ -21,8 +21,9 @@ type GroceryItemSupermarketData = {
 export type GroceryListItemData = {
   name: string,
   SupermarketDataDict: { [key: number]: GroceryItemSupermarketData },
-  results?: { [key: string]: GroceryItemData[] }
-  searchState: searchStateEnum
+  results?: { [key: string]: GroceryItemData[] },
+  searchState: searchStateEnum,
+  searchQuery: string
 }
 @Component({
   selector: 'app-grocery-list-item',
@@ -32,7 +33,7 @@ export type GroceryListItemData = {
   styleUrl: './grocery-list-item.component.css'
 })
 export class GroceryListItemComponent {
-  @Input() data: GroceryListItemData = { name: '', SupermarketDataDict: {}, searchState: searchStateEnum.NO_SEARCH }
+  @Input() data: GroceryListItemData = { name: '', SupermarketDataDict: {}, searchState: searchStateEnum.NO_SEARCH, searchQuery: '' }
   @Output() removeItemEvent = new EventEmitter<number>();
   @Output() selectItemEvent = new EventEmitter<number>();
   @Input() index = 0;

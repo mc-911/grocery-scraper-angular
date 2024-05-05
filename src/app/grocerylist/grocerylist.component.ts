@@ -9,6 +9,7 @@ import { ReactiveFormsModule, FormControl } from '@angular/forms';
 import { NewWorldSvgComponent } from '../new-world-svg/new-world-svg.component';
 import { DropdownComponent } from '../dropdown/dropdown.component';
 import { NotificationContainerComponent } from '../notification-container/notification-container.component';
+import { TotalContainerComponent } from '../total-container/total-container.component';
 
 export type GroceryItemData = {
   name: string,
@@ -28,17 +29,17 @@ export enum searchStateEnum {
 @Component({
   selector: 'app-grocerylist',
   standalone: true,
-  imports: [CountdownSvgComponent, PacknSaveSvgComponent, SupermarketItemCardComponent, NgFor, NgSwitch, NgSwitchCase, NgIf, ReactiveFormsModule, GroceryListItemComponent, NewWorldSvgComponent, DropdownComponent, NotificationContainerComponent],
+  imports: [CountdownSvgComponent, PacknSaveSvgComponent, SupermarketItemCardComponent, NgFor, NgSwitch, NgSwitchCase, NgIf, ReactiveFormsModule, GroceryListItemComponent, NewWorldSvgComponent, DropdownComponent, NotificationContainerComponent, TotalContainerComponent],
   templateUrl: './grocerylist.component.html',
   styleUrl: './grocerylist.component.css'
 })
 export class GrocerylistComponent {
-  groceryListItems: GroceryListItemData[] = [{ name: "Test Item", SupermarketDataDict: {}, searchState: searchStateEnum.NO_SEARCH }]
+  groceryListItems: GroceryListItemData[] = [{ name: "Test Item", SupermarketDataDict: {}, searchState: searchStateEnum.NO_SEARCH, searchQuery: '' }]
   selectedGroceryListItem: GroceryListItemData | null = null
   selectedSupermarkets: string[] = ["paknsave"]
   searchQuery = new FormControl('');
   newGroceryListItemName = new FormControl('')
-  newGroceryListSearchQuery = new FormControl('')
+  newGroceryListSearchQuery = new FormControl('disabled')
   categories = [{ name: 'General', value: 'GENERAL' }, { name: 'Beef', value: 'BEEF' }, { name: 'Lamb', value: 'LAMB' }, { name: 'Pork', value: 'PORK' }, { name: 'Chicken', value: 'CHICKEN' }, { name: 'Vegetable', value: 'VEGETABLE' }, { name: 'Fruit', value: 'FRUIT' }, { name: 'Eggs', value: 'EGGS' }]
   sortingOptions = [{ name: 'Price - Low to High', value: 'ASC' }, { name: 'Price - High to Low', value: 'DESC' }]
   selectedCategory = ''
@@ -62,6 +63,9 @@ export class GrocerylistComponent {
       errors.push('Please select a Supermarket')
     }
     if (errors.length == 0) {
+      if (this.searchQuery.value && this.selectedGroceryListItem) {
+        this.selectedGroceryListItem.searchQuery = this.searchQuery.value;
+      }
       this.getGrocerySearch(this.searchQuery.value!, this.selectedSupermarkets, this.selectedSort, this.selectedCategory)
     } else {
       this.addNotification(errors)
@@ -101,12 +105,21 @@ export class GrocerylistComponent {
       modal.close()
     }
   }
+  public toggleSettingsModal() {
+    console.log(1)
+    const modal = (document.getElementById("settingsDialog") as HTMLDialogElement)
+    if (!modal.open) {
+      modal.showModal()
+    } else {
+      modal.close()
+    }
+  }
   public addGroceryListItem() {
-    if (this.newGroceryListItemName.value && this.newGroceryListSearchQuery.value) {
-      this.selectedGroceryListItem = { name: this.newGroceryListItemName.value, SupermarketDataDict: {}, searchState: searchStateEnum.NO_SEARCH }
+    if (this.newGroceryListItemName.value) {
+      this.selectedGroceryListItem = { name: this.newGroceryListItemName.value, SupermarketDataDict: {}, searchState: searchStateEnum.NO_SEARCH, searchQuery: this.newGroceryListItemName.value }
       console.log(this.selectedGroceryListItem)
       this.groceryListItems.push(this.selectedGroceryListItem)
-      this.searchQuery.setValue(this.newGroceryListSearchQuery.value)
+      this.searchQuery.setValue(this.newGroceryListItemName.value)
       this.newGroceryListItemName.setValue('')
       this.newGroceryListSearchQuery.setValue('')
       this.toggleAddGroceryListModal()
@@ -153,6 +166,7 @@ export class GrocerylistComponent {
     ) {
       this.selectedGroceryListItem = null;
     } else {
+      this.searchQuery.setValue(this.groceryListItems[index].searchQuery)
       this.selectedGroceryListItem = this.groceryListItems[index]
     }
 
@@ -177,4 +191,6 @@ export class GrocerylistComponent {
   public addNotification(messages: string[]) {
     this.notifications.push(messages)
   }
+
+
 }

@@ -1,3 +1,2 @@
-<app-notification *ngFor="let message of messages; index as i" [messages]="message" [messageIndex]="i"
-    (removeNotificationEvent)="removeNotification($event)">
+<app-notification *ngFor="let message of messages" [messages]="message">
 </app-notification>

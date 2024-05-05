@@ -16,5 +16,6 @@ export class NotificationContainerComponent {
    * removeNotification
    */
   public removeNotification(index: number) {
+    this.messages.splice(index, 1)
   }
 }
