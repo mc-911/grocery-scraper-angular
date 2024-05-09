@@ -23,30 +23,62 @@
             <path
                 d="M39.5397 16.8376V42.1884H21.441C15.5762 42.1884 10.216 39.9182 6.36923 36.1975C2.45941 32.4138 0 27.1166 0 21.315C0 15.5133 2.45941 10.2161 6.36923 6.43239C10.216 2.71175 15.5762 0.441528 21.441 0.441528H39.4136V6.43239H19.2969C11.7295 7.44138 5.9278 13.7476 5.9278 21.315C5.9278 28.8824 11.7295 35.1885 19.2969 36.1975H33.4858V22.8915H21.5671L18.7293 16.8376H39.5397Z" />
         </svg>
-        <svg class="plus" viewBox="0 0 76 75" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <svg #plus class="plus spin" (click)="spinPlus()" viewBox="0 0 76 75" fill="none"
+            xmlns="http://www.w3.org/2000/svg">
             <path d="M75.0241 41.1344L0.100403 41.8867L0 31.8872L74.9237 31.1349L75.0241 41.1344Z" />
             <path d="M42.4298 28.8657L42.1399 0L32.1404 0.100403L32.4303 28.9662L42.4298 28.8657Z" />
             <path d="M42.5859 44.4181L32.5864 44.5185L32.8918 74.9351L42.8913 74.8347L42.5859 44.4181Z" />
         </svg>
     </div>
 
-    <form class="form">
-        <div class="input-container">
-            <input type="text" placeholder="Email Address" id="firstname">
+    <form [formGroup]="registrationForm" (ngSubmit)="register()">
+        <div class="column-container">
+            <div class="input-col">
+                <div class="input-container">
+                    <input type="text" placeholder="Email Address" id="emailAddress" formControlName="email">
+                    <div class="input-error" *ngIf="email?.errors?.['email'] && this.email?.dirty">Email format is
+                        invalid
+                    </div>
+                    <div class="input-error" *ngIf="email?.errors?.['required'] && this.email?.dirty">Please enter
+                        your
+                        email address</div>
+                    <div class="input-error" *ngIf="emailInUse">Email in use
+                    </div>
+                </div>
+                <div class="input-container">
+                    <input type="text" placeholder="First Name" id="firstName" formControlName="firstName">
+                    <div class="input-error" *ngIf="firstName?.invalid && this.firstName?.dirty">Please enter your
+                        first name
+                    </div>
+                </div>
+                <div class="input-container">
+                    <input type="text" placeholder="Last Name" id="lastName" formControlName="lastName">
+                    <div class="input-error" *ngIf="lastName?.invalid && this.lastName?.dirty">Please enter your last
+                        name
+                    </div>
+                </div>
+            </div>
+            <div class="input-col">
+                <div class="input-container">
+                    <input type="password" placeholder="Password" id="password" formControlName="password">
+                    <div class="input-error" *ngIf="password?.invalid && this.password?.dirty">Please enter a password
+                    </div>
+                </div>
+                <div class="input-container">
+                    <input type="password" placeholder="Confirm Password" id="confirmPassword"
+                        formControlName="confirmPassword">
+                    <div class="input-error" *ngIf="confirmPassword?.errors?.['passwordsDontMatch']">Passwords do not
+                        match
+                    </div>
+                    <div class="input-error"
+                        *ngIf="confirmPassword?.errors?.['required'] && this.confirmPassword?.dirty">
+                        Please Confirm
+                        your
+                        password</div>
+                </div>
+            </div>
         </div>
-        <div class="input-container">
-            <input type="text" placeholder="First Name" id="firstname">
-        </div>
-        <div class="input-container">
-            <input type="text" placeholder="Last Name" id="firstname">
-        </div>
-        <div class="input-container">
-            <input type="password" placeholder="Password" id="password">
-        </div>
-        <div class="input-container">
-            <input type="password" placeholder="Confirm Password" id="password">
-        </div>
-        <div class="btn green-bg">Register</div>
+        <button [disabled]="registrationForm.invalid" class="btn green-bg">Register</button>
         <div class="info-container">Already have an Account? <a routerLink="/login" routerLinkActive="active"
                 ariaCurrentWhenActive="page">Login</a></div>
     </form>

@@ -13,5 +13,11 @@
 }
 
 .logo-container {
-    margin-top: 30vh;
+    margin-top: 20vh;
+}
+
+.column-container {
+    display: flex;
+    flex-direction: row;
+    gap: 12px;
 }
