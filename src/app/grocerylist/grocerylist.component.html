@@ -79,7 +79,7 @@
                         <app-supermarket-item-card #showPakNSaveResults
                             *ngFor="let item of selectedGroceryListItem.results['paknsave']"
                             [selectedGroceryListItem]="selectedGroceryListItem" [supermarket]="0" [data]="item" />
-                        <div *ngIf="selectedGroceryListItem.results['paknsave'].length == 0;" class="noResultsMessage">
+                        <div *ngIf="selectedGroceryListItem.results.paknsave?.length == 0;" class="noResultsMessage">
                             No Results</div>
                     </div>
                 </div>
@@ -89,7 +89,7 @@
                     <div class="supermarket-results-container">
                         <app-supermarket-item-card *ngFor="let item of selectedGroceryListItem.results['countdown']"
                             [selectedGroceryListItem]="selectedGroceryListItem" [supermarket]="1" [data]="item" />
-                        <div *ngIf="selectedGroceryListItem.results['countdown'].length == 0;" class="noResultsMessage">
+                        <div *ngIf="selectedGroceryListItem.results.countdown?.length == 0;" class="noResultsMessage">
                             No Results</div>
                     </div>
                 </div>
@@ -99,7 +99,7 @@
                     <div class="supermarket-results-container">
                         <app-supermarket-item-card *ngFor="let item of selectedGroceryListItem.results['newworld']"
                             [selectedGroceryListItem]="selectedGroceryListItem" [supermarket]="2" [data]="item" />
-                        <div *ngIf="selectedGroceryListItem.results['newworld'].length == 0;" class="noResultsMessage">
+                        <div *ngIf="selectedGroceryListItem.results.newworld?.length == 0;" class="noResultsMessage">
                             No Results</div>
                     </div>
                 </div>
@@ -121,7 +121,7 @@
                         </path>
                     </svg>
                 </div>
-                <div class="settings-header-name">
+                <div class="menu-header-name">
                     New Grocery List Item
                 </div>
             </div>
@@ -136,10 +136,8 @@
                     <input [formControl]="newGroceryListSearchQuery" id="groceryListItemSearchQuery" type="text" />
                 </div> -->
             </div>
-            <div class="addGroceryListItemFooterSection">
-                <div class="green-bg btn" (click)="addGroceryListItem()">
-                    Add
-                </div>
+            <div class="green-bg btn" (click)="addGroceryListItem()">
+                Add
             </div>
         </div>
     </dialog>
@@ -153,7 +151,7 @@
                         </path>
                     </svg>
                 </div>
-                <div class="settings-header-name">
+                <div class="menu-header-name">
                     Settings
                 </div>
             </div>
@@ -173,6 +171,35 @@
             </div>
             <div class="red-bg btn">
                 Log out
+            </div>
+        </div>
+    </dialog>
+    <dialog #setPreferencesDialog id="selectPreferencesDialog">
+        <div class="menuContainer">
+            <div class="menuHeader">
+                <div class="menu-header-name">
+                    Welcome to Grocery List Plus
+                </div>
+            </div>
+            <div class="menuSubheader">Please select the grocery stores you'd like to search</div>
+            <div class="selectPreferencesSubcontainer">
+                <div class="selectGroceryStoresContainer">
+                    <div [class]="selectedSupermarkets.includes('paknsave') ? 'paknsave-bg' : 'disabled' "
+                        (mouseup)="toggleSupermarket($event, 'paknsave')">
+                        <app-packn-save-svg class="price-logo-lg" />
+                    </div>
+                    <div [class]="selectedSupermarkets.includes('countdown') ? 'countdown-bg' : 'disabled' "
+                        (mouseup)="toggleSupermarket($event, 'countdown')">
+                        <app-countdown-svg class="price-logo-lg" />
+                    </div>
+                    <div [class]="selectedSupermarkets.includes('newworld') ? 'newworld-bg' : 'disabled' "
+                        (mouseup)="toggleSupermarket($event, 'newworld')">
+                        <app-new-world-svg class="price-logo-lg" />
+                    </div>
+                </div>
+            </div>
+            <div class="green-bg btn" (click)="setPreferencesDialog.close()">
+                Continue
             </div>
         </div>
     </dialog>

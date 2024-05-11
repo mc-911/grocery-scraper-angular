@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
-import { GroceryItemData } from '../grocerylist/grocerylist.component';
 import { GroceryListItemData, SupermarketEnum } from '../grocery-list-item/grocery-list-item.component';
+import { GroceryItemData } from '../grocery.service';
 
 @Component({
   selector: 'app-supermarket-item-card',

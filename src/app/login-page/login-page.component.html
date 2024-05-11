@@ -44,9 +44,11 @@
         <div class="input-container">
             <input type="password" placeholder="Password" id="password" formControlName="password">
             <div class="input-error" *ngIf="password?.dirty && password?.invalid">Please enter Password</div>
-            <div class="input-error" *ngIf="errorMessage">Incorrect email or password</div>
+            <div class="input-error" *ngIf="errorMessage">{{errorMessage}}</div>
+            <div class="verified-email-msg" *ngIf="verifiedEmail">Email Verified. You may now log into your account
+            </div>
         </div>
-        <div class="info-container"><a routerLink="/register" routerLinkActive="active"
+        <div class="info-container mb-24"><a routerLink="/register" routerLinkActive="active"
                 ariaCurrentWhenActive="page">Forgot Password?</a></div>
         <button class="btn green-bg" [disabled]="loginForm.invalid">Login</button>
         <div class="info-container">New here? <a routerLink="/register" routerLinkActive="active"

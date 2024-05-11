@@ -21,3 +21,29 @@
     flex-direction: row;
     gap: 12px;
 }
+
+
+.email-sent-container {
+    display: flex;
+    flex-direction: column;
+    background-color: black;
+    color: white;
+    width: 800px;
+    gap: 12px;
+}
+
+.title {
+    width: 100%;
+    font-size: 1.8rem;
+    font-weight: 500;
+}
+
+.msg-container {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.subtitle {
+    font-weight: 500;
+}

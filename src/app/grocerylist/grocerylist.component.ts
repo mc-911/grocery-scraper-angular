@@ -1,4 +1,4 @@
-import { Component, ElementRef } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 import { CountdownSvgComponent } from '../countdown-svg/countdown-svg.component'
 import { PacknSaveSvgComponent } from '../packn-save-svg/packn-save-svg.component';
 import { SupermarketItemCardComponent } from '../supermarket-item-card/supermarket-item-card.component';
@@ -10,17 +10,12 @@ import { NewWorldSvgComponent } from '../new-world-svg/new-world-svg.component';
 import { DropdownComponent } from '../dropdown/dropdown.component';
 import { NotificationContainerComponent } from '../notification-container/notification-container.component';
 import { TotalContainerComponent } from '../total-container/total-container.component';
+import { GroceryService } from '../grocery.service';
+import { EMPTY, catchError } from 'rxjs';
+import { AuthService } from '../auth.service';
+import { Router } from '@angular/router';
+import { UserService } from '../user.service';
 
-export type GroceryItemData = {
-  name: string,
-  dollars: number,
-  cents: number,
-  metric: string,
-  imageUrl: string
-  subtitle: string
-  productUrl: string
-  productCode: number,
-}
 export enum searchStateEnum {
   NO_SEARCH,
   LOADING,
@@ -46,13 +41,38 @@ export class GrocerylistComponent {
   selectedSort = ''
   notifications: string[][] = []
   mobile = false;
-  constructor(private el: ElementRef) {
+  showSetPreferencesDialog = false;
+  @ViewChild("setPreferencesDialog") setPreferencesDialog!: ElementRef<HTMLDialogElement>
+
+  constructor(private el: ElementRef, private groceryService: GroceryService, private authService: AuthService, private router: Router, private userService: UserService) {
   }
 
   ngOnInit() {
+    if (!this.authService.authToken) {
+      this.router.navigate(["/", "login"])
+    }
+    const storedSelectedSupermarketsString = localStorage.getItem("selectedSupermarkets")
+    if (storedSelectedSupermarketsString) {
+      try {
+        this.selectedSupermarkets = JSON.parse(storedSelectedSupermarketsString)
+      }
+      catch (e) {
+        console.log(e);
+      }
+    }
     this.selectedCategory = this.categories[0].value
     this.selectedSort = this.sortingOptions[0].value
     this.mobile = window.innerWidth <= 480;
+
+  }
+  ngAfterViewInit() {
+
+    if (this.userService.isNewUser) {
+      this.showSetPreferencesDialog = true
+      this.setPreferencesDialog.nativeElement.showModal()
+      // this.userService.newUser = false
+    }
+    console.log(this.setPreferencesDialog);
   }
   public search() {
     let errors = [];
@@ -66,20 +86,24 @@ export class GrocerylistComponent {
       if (this.searchQuery.value && this.selectedGroceryListItem) {
         this.selectedGroceryListItem.searchQuery = this.searchQuery.value;
       }
-      this.getGrocerySearch(this.searchQuery.value!, this.selectedSupermarkets, this.selectedSort, this.selectedCategory)
+      if (this.selectedGroceryListItem) {
+        this.selectedGroceryListItem.searchState = searchStateEnum.LOADING;
+      }
+      this.groceryService.grocerySearch(this.searchQuery.value!, this.selectedSupermarkets, this.selectedSort, this.selectedCategory).pipe(catchError(() => {
+        console.log("Handle this error")
+        return EMPTY;
+      })).subscribe((resp) => {
+        if (this.selectedGroceryListItem) {
+          this.selectedGroceryListItem.results = resp
+          this.selectedGroceryListItem.searchState = searchStateEnum.SEARCHED;
+        }
+      })
     } else {
       this.addNotification(errors)
     }
   }
   public getGrocerySearch(query: string, selectedSupermarkets: string[], order: string, category: string) {
-    if (this.selectedGroceryListItem) {
-      this.selectedGroceryListItem.searchState = searchStateEnum.LOADING;
-    }
     axios.get(`http://localhost:5000/grocery-search?query=${query}&supermarket=${selectedSupermarkets}&order=${order}&category=${category}`).then((response: AxiosResponse) => {
-      if (this.selectedGroceryListItem) {
-        this.selectedGroceryListItem.results = response.data
-        this.selectedGroceryListItem.searchState = searchStateEnum.SEARCHED;
-      }
       console.log(response.data)
     }).catch((error: AxiosError) => {
       console.log(error)
@@ -89,12 +113,10 @@ export class GrocerylistComponent {
     const index = this.selectedSupermarkets.findIndex((value) => value == supermarket)
     if (index != -1) {
       this.selectedSupermarkets.splice(index, 1);
-      (event.target as HTMLDivElement).classList.add('disabled')
     } else {
       this.selectedSupermarkets.push(supermarket);
-      (event.target as HTMLDivElement).classList.remove('disabled')
     }
-    console.log(this.selectedSupermarkets)
+    localStorage.setItem("selectedSupermarkets", JSON.stringify(this.selectedSupermarkets))
   }
 
   public toggleAddGroceryListModal() {

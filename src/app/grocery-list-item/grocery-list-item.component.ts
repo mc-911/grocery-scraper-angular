@@ -3,7 +3,8 @@ import { PacknSaveSvgComponent } from '../packn-save-svg/packn-save-svg.componen
 import { CountdownSvgComponent } from '../countdown-svg/countdown-svg.component';
 import { NgFor, NgSwitch, NgSwitchCase } from '@angular/common';
 import { NewWorldSvgComponent } from '../new-world-svg/new-world-svg.component';
-import { GroceryItemData, searchStateEnum } from '../grocerylist/grocerylist.component';
+import { searchStateEnum } from '../grocerylist/grocerylist.component';
+import { GroceryItemData, GrocerySearchResponse } from '../grocery.service';
 
 export enum SupermarketEnum {
   PAKNSAVE,
@@ -21,7 +22,7 @@ type GroceryItemSupermarketData = {
 export type GroceryListItemData = {
   name: string,
   SupermarketDataDict: { [key: number]: GroceryItemSupermarketData },
-  results?: { [key: string]: GroceryItemData[] },
+  results?: GrocerySearchResponse,
   searchState: searchStateEnum,
   searchQuery: string
 }

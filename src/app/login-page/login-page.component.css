@@ -15,3 +15,13 @@
 .logo-container {
     margin-top: 20vh;
 }
+
+.mb-24 {
+    margin-bottom: 57px;
+}
+
+.verified-email-msg {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: white;
+}

@@ -31,7 +31,21 @@
         </svg>
     </div>
 
-    <form [formGroup]="registrationForm" (ngSubmit)="register()">
+    <div class="email-sent-container" *ngIf="emailSent">
+        <div class="title">...Nearly done!</div>
+        <div class="msg-container">
+            <div class="subtitle">
+                Hey there {{firstName?.value}}
+            </div>
+            <div>
+                A verification email has been sent to your email ({{email?.value}}), please click on the link provided
+                in
+                the email to in order to verify
+                your account, and start using Grocery List Plus
+            </div>
+        </div>
+    </div>
+    <form [formGroup]="registrationForm" (ngSubmit)="register()" *ngIf="!emailSent">
         <div class="column-container">
             <div class="input-col">
                 <div class="input-container">

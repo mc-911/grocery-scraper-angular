@@ -56,6 +56,7 @@ export class RegistrationPageComponent {
       }
       return EMPTY
     })).subscribe((resp) => {
+      console.log("Email Sent")
       this.emailSent = true;
     })
   }

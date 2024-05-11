@@ -1,9 +1,10 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
-import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { UserService } from '../user.service';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { NgIf } from '@angular/common';
 import { EMPTY, catchError } from 'rxjs';
+import { AuthService } from '../auth.service';
 
 @Component({
   selector: 'app-login-page',
@@ -16,8 +17,23 @@ export class LoginPageComponent {
 
   loginForm = new FormGroup({ email: new FormControl('', [Validators.required]), password: new FormControl('', Validators.required) })
   errorMessage = '';
+  emailToken = ''
+  verifiedEmail = false
   @ViewChild('plus') plus!: ElementRef<SVGElement>;
-  constructor(private userService: UserService) { }
+  constructor(private userService: UserService, private route: ActivatedRoute, private router: Router, private authService: AuthService) { }
+
+  ngOnInit() {
+    const verificationToken = this.route.snapshot.queryParamMap.get('verificationToken');
+    console.log(verificationToken, 1)
+    if (verificationToken) {
+      this.userService.verifyUser(verificationToken).pipe(catchError(err => {
+        this.errorMessage = err.message
+        return EMPTY
+      })).subscribe(resp => {
+        this.verifiedEmail = true
+      })
+    }
+  }
 
   /**
    * Login
@@ -31,6 +47,13 @@ export class LoginPageComponent {
           this.errorMessage = err.message
           return EMPTY
         })).subscribe(resp => {
+          if (resp.token) {
+            this.authService.authToken = resp.token;
+            if (resp.isNewUser) {
+              this.userService.isNewUser = resp.isNewUser
+            }
+            this.router.navigate(["/", "grocerylist"])
+          }
         })
       }
     }
