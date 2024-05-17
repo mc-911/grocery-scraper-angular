@@ -4,13 +4,12 @@ import { environment } from '../environments/environment';
 import { catchError, throwError } from 'rxjs';
 export type GroceryItemData = {
   name: string,
-  dollars: number,
-  cents: number,
+  price: number,
   metric: string,
   imageUrl: string
-  subtitle: string
+  info: string
   productUrl: string
-  productCode: number,
+  productCode: string,
 }
 export interface GrocerySearchResponse {
   paknsave?: GroceryItemData[]
@@ -37,8 +36,12 @@ export class GroceryService {
         return throwError(() => new Error('Uh-Oh an error has occurred; please try again later.', { cause: "unknown" }))
     }
   }
-  grocerySearch(query: string, selectedSupermarkets: string[], order: string, category: string) {
-    const url = environment.apiUrl + `/grocery-search?query=${query}&supermarket=${selectedSupermarkets}&order=${order}&category=${category}`
+  grocerySearch(query: string, selectedSupermarkets: string[], order: string, category: string, latitude: number, longitude: number) {
+    const url = environment.apiUrl + `/grocery-search?query=${query}&supermarkets=${selectedSupermarkets}&order=${order}&category=${category}&longitude=${longitude}&latitude=${latitude}`
+    return this.http.get<GrocerySearchResponse>(url).pipe(catchError(this.handleGrocerySearchError))
+  }
+  grocerySearchv2(query: string, selectedSupermarkets: string[], order: string, category: string, latitude: number, longitude: number) {
+    const url = environment.apiUrl + `/v2/grocery-search?query=${query}&supermarkets=${selectedSupermarkets}&order=${order}&category=${category}&longitude=${longitude}&latitude=${latitude}`
     return this.http.get<GrocerySearchResponse>(url).pipe(catchError(this.handleGrocerySearchError))
   }
 }

@@ -15,6 +15,7 @@ import { EMPTY, catchError } from 'rxjs';
 import { AuthService } from '../auth.service';
 import { Router } from '@angular/router';
 import { UserService } from '../user.service';
+import { LocationService } from '../location.service';
 
 export enum searchStateEnum {
   NO_SEARCH,
@@ -44,7 +45,7 @@ export class GrocerylistComponent {
   showSetPreferencesDialog = false;
   @ViewChild("setPreferencesDialog") setPreferencesDialog!: ElementRef<HTMLDialogElement>
 
-  constructor(private el: ElementRef, private groceryService: GroceryService, private authService: AuthService, private router: Router, private userService: UserService) {
+  constructor(private el: ElementRef, private groceryService: GroceryService, private authService: AuthService, private router: Router, private userService: UserService, private locationService: LocationService) {
   }
 
   ngOnInit() {
@@ -60,10 +61,12 @@ export class GrocerylistComponent {
         console.log(e);
       }
     }
+    if (!this.locationService.currentLocation) {
+      this.locationService.setCurrentLocation()
+    }
     this.selectedCategory = this.categories[0].value
     this.selectedSort = this.sortingOptions[0].value
     this.mobile = window.innerWidth <= 480;
-
   }
   ngAfterViewInit() {
 
@@ -72,15 +75,25 @@ export class GrocerylistComponent {
       this.setPreferencesDialog.nativeElement.showModal()
       // this.userService.newUser = false
     }
+
+    this.locationService.setCurrentLocation()
+
     console.log(this.setPreferencesDialog);
   }
   public search() {
+    const currentLocation = this.locationService.currentLocation
+    console.log(currentLocation);
+
     let errors = [];
     if (!this.searchQuery.value) {
       errors.push('Please enter a seach query')
     }
     if (this.selectedSupermarkets.length === 0) {
       errors.push('Please select a Supermarket')
+    }
+    if (!currentLocation) {
+      this.locationService.setCurrentLocation()
+      errors.push('Please enable your location')
     }
     if (errors.length == 0) {
       if (this.searchQuery.value && this.selectedGroceryListItem) {
@@ -89,7 +102,7 @@ export class GrocerylistComponent {
       if (this.selectedGroceryListItem) {
         this.selectedGroceryListItem.searchState = searchStateEnum.LOADING;
       }
-      this.groceryService.grocerySearch(this.searchQuery.value!, this.selectedSupermarkets, this.selectedSort, this.selectedCategory).pipe(catchError(() => {
+      this.groceryService.grocerySearch(this.searchQuery.value!, this.selectedSupermarkets, this.selectedSort, this.selectedCategory, currentLocation!.latitude, currentLocation!.longtitude).pipe(catchError(() => {
         console.log("Handle this error")
         return EMPTY;
       })).subscribe((resp) => {
@@ -101,13 +114,6 @@ export class GrocerylistComponent {
     } else {
       this.addNotification(errors)
     }
-  }
-  public getGrocerySearch(query: string, selectedSupermarkets: string[], order: string, category: string) {
-    axios.get(`http://localhost:5000/grocery-search?query=${query}&supermarket=${selectedSupermarkets}&order=${order}&category=${category}`).then((response: AxiosResponse) => {
-      console.log(response.data)
-    }).catch((error: AxiosError) => {
-      console.log(error)
-    })
   }
   public toggleSupermarket(event: Event, supermarket: string) {
     const index = this.selectedSupermarkets.findIndex((value) => value == supermarket)
@@ -158,7 +164,7 @@ export class GrocerylistComponent {
       )
       if (entries.length > 0) {
         console.log("Calculating min price for: ", this.groceryListItems[i].name)
-        const supermarketMinPricePair = entries.reduce((previousValue, currentValue) => ((currentValue[1].dollars + currentValue[1].cents / 100) < previousValue.price ? { "supermarket": currentValue[0], "price": currentValue[1].dollars + currentValue[1].cents / 100 } : previousValue), { "supermarket": entries[0][0], "price": entries[0][1].dollars + entries[0][1].cents / 100 })
+        const supermarketMinPricePair = entries.reduce((previousValue, currentValue) => ((currentValue[1].price) < previousValue.price ? { "supermarket": currentValue[0], "price": currentValue[1].price } : previousValue), { "supermarket": entries[0][0], "price": entries[0][1].price })
         total += supermarketMinPricePair.price;
       }
     }
@@ -214,5 +220,9 @@ export class GrocerylistComponent {
     this.notifications.push(messages)
   }
 
+  public logOut() {
+    this.authService.authToken = "";
+    this.router.navigate(["/", "login"])
+  }
 
 }

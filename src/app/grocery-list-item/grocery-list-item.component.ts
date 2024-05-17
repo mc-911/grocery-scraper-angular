@@ -12,11 +12,10 @@ export enum SupermarketEnum {
   NEW_WORLD
 }
 type GroceryItemSupermarketData = {
-  dollars: number,
-  cents: number,
+  price: number,
   supermarket: SupermarketEnum
   content: string
-  productCode: number,
+  productCode: string,
 }
 
 export type GroceryListItemData = {
@@ -63,9 +62,9 @@ export class GroceryListItemComponent {
     this.selectItemEvent.emit(this.index)
   }
 
-  public getFormattedPrice(dollars: number, cents: number) {
+  public getFormattedPrice(price: number) {
     const formatter = new Intl.NumberFormat("en-NZ", { style: 'currency', currency: 'NZD' })
-    return formatter.format(dollars + cents / 100)
+    return formatter.format(price)
   }
 
 
