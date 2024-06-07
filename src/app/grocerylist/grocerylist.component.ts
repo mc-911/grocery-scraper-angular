@@ -1,72 +1,77 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import { Component, ElementRef, Input, ViewChild } from '@angular/core';
 import { CountdownSvgComponent } from '../countdown-svg/countdown-svg.component'
 import { PacknSaveSvgComponent } from '../packn-save-svg/packn-save-svg.component';
 import { SupermarketItemCardComponent } from '../supermarket-item-card/supermarket-item-card.component';
-import { NgFor, NgIf, NgSwitch, NgSwitchCase, NgSwitchDefault } from '@angular/common';
-import axios, { AxiosError, AxiosResponse } from 'axios';
+import { NgFor, NgIf, NgSwitch, NgSwitchCase } from '@angular/common';
 import { GroceryListItemComponent, GroceryListItemData, SupermarketEnum } from '../grocery-list-item/grocery-list-item.component';
 import { ReactiveFormsModule, FormControl } from '@angular/forms';
 import { NewWorldSvgComponent } from '../new-world-svg/new-world-svg.component';
 import { DropdownComponent } from '../dropdown/dropdown.component';
 import { NotificationContainerComponent } from '../notification-container/notification-container.component';
 import { TotalContainerComponent } from '../total-container/total-container.component';
-import { GroceryService } from '../grocery.service';
+import { GroceryItemData, GroceryService } from '../grocery.service';
 import { EMPTY, catchError } from 'rxjs';
 import { AuthService } from '../auth.service';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { UserService } from '../user.service';
 import { LocationService } from '../location.service';
+import { GroceryListDetailComponent } from '../grocery-list-detail/grocery-list-detail.component';
+import { GroceryListSearchComponent, searchStateEnum } from '../grocery-list-search/grocery-list-search.component';
 
-export enum searchStateEnum {
-  NO_SEARCH,
-  LOADING,
-  SEARCHED
-}
 @Component({
   selector: 'app-grocerylist',
   standalone: true,
-  imports: [CountdownSvgComponent, PacknSaveSvgComponent, SupermarketItemCardComponent, NgFor, NgSwitch, NgSwitchCase, NgIf, ReactiveFormsModule, GroceryListItemComponent, NewWorldSvgComponent, DropdownComponent, NotificationContainerComponent, TotalContainerComponent],
+  imports: [CountdownSvgComponent, PacknSaveSvgComponent, NewWorldSvgComponent, NgFor, NgSwitch, NgSwitchCase, NgIf, ReactiveFormsModule, GroceryListItemComponent, NotificationContainerComponent, TotalContainerComponent, GroceryListDetailComponent, GroceryListSearchComponent],
   templateUrl: './grocerylist.component.html',
   styleUrl: './grocerylist.component.css'
 })
 export class GrocerylistComponent {
-  groceryListItems: GroceryListItemData[] = [{ name: "Test Item", SupermarketDataDict: {}, searchState: searchStateEnum.NO_SEARCH, searchQuery: '' }]
+  groceryListItems: GroceryListItemData[] = []
   selectedGroceryListItem: GroceryListItemData | null = null
-  selectedSupermarkets: string[] = ["paknsave"]
-  searchQuery = new FormControl('');
   newGroceryListItemName = new FormControl('')
   newGroceryListSearchQuery = new FormControl('disabled')
-  categories = [{ name: 'General', value: 'GENERAL' }, { name: 'Beef', value: 'BEEF' }, { name: 'Lamb', value: 'LAMB' }, { name: 'Pork', value: 'PORK' }, { name: 'Chicken', value: 'CHICKEN' }, { name: 'Vegetable', value: 'VEGETABLE' }, { name: 'Fruit', value: 'FRUIT' }, { name: 'Eggs', value: 'EGGS' }]
-  sortingOptions = [{ name: 'Price - Low to High', value: 'ASC' }, { name: 'Price - High to Low', value: 'DESC' }]
-  selectedCategory = ''
-  selectedSort = ''
   notifications: string[][] = []
   mobile = false;
   showSetPreferencesDialog = false;
+  name = "Grocery List"
+  selectedSupermarkets = this.groceryService.selectedSupermarkets
+  @Input() id!: string;
   @ViewChild("setPreferencesDialog") setPreferencesDialog!: ElementRef<HTMLDialogElement>
+  @ViewChild("optionsMenuDialog") optionsMenuDialog!: ElementRef<HTMLDialogElement>
 
-  constructor(private el: ElementRef, private groceryService: GroceryService, private authService: AuthService, private router: Router, private userService: UserService, private locationService: LocationService) {
+  constructor(private el: ElementRef, public groceryService: GroceryService, private authService: AuthService, private router: Router, public userService: UserService, private locationService: LocationService, private route: ActivatedRoute) {
   }
 
   ngOnInit() {
-    if (!this.authService.authToken) {
-      this.router.navigate(["/", "login"])
-    }
-    const storedSelectedSupermarketsString = localStorage.getItem("selectedSupermarkets")
-    if (storedSelectedSupermarketsString) {
-      try {
-        this.selectedSupermarkets = JSON.parse(storedSelectedSupermarketsString)
-      }
-      catch (e) {
-        console.log(e);
-      }
-    }
+    this.checkAuth()
     if (!this.locationService.currentLocation) {
       this.locationService.setCurrentLocation()
     }
-    this.selectedCategory = this.categories[0].value
-    this.selectedSort = this.sortingOptions[0].value
     this.mobile = window.innerWidth <= 480;
+    if (!this.id) {
+      console.log("No Grocery List Id!");
+    } else {
+      this.groceryService.getGroceryList(this.id).pipe(catchError(() => {
+        return EMPTY
+      })).subscribe((response) => {
+        console.log(response);
+
+        this.name = response.name
+        this.groceryListItems = response.items.map((item) => {
+          let supermarketDataDict: { [key: string]: GroceryItemData } = {}
+          item.supermarketInformation.forEach((supermarketInfo) => supermarketDataDict[supermarketInfo.supermarket] = supermarketInfo)
+          return {
+            name: item.name,
+            supermarketDataDict: supermarketDataDict,
+            searchState: searchStateEnum.NO_SEARCH,
+            searchQuery: item.searchQuery,
+            groceryListItemId: item.groceryListItemId
+          }
+        })
+        console.log(this.groceryListItems);
+      })
+    }
+
   }
   ngAfterViewInit() {
 
@@ -80,50 +85,16 @@ export class GrocerylistComponent {
 
     console.log(this.setPreferencesDialog);
   }
-  public search() {
-    const currentLocation = this.locationService.currentLocation
-    console.log(currentLocation);
 
-    let errors = [];
-    if (!this.searchQuery.value) {
-      errors.push('Please enter a seach query')
-    }
-    if (this.selectedSupermarkets.length === 0) {
-      errors.push('Please select a Supermarket')
-    }
-    if (!currentLocation) {
-      this.locationService.setCurrentLocation()
-      errors.push('Please enable your location')
-    }
-    if (errors.length == 0) {
-      if (this.searchQuery.value && this.selectedGroceryListItem) {
-        this.selectedGroceryListItem.searchQuery = this.searchQuery.value;
-      }
-      if (this.selectedGroceryListItem) {
-        this.selectedGroceryListItem.searchState = searchStateEnum.LOADING;
-      }
-      this.groceryService.grocerySearch(this.searchQuery.value!, this.selectedSupermarkets, this.selectedSort, this.selectedCategory, currentLocation!.latitude, currentLocation!.longtitude).pipe(catchError(() => {
-        console.log("Handle this error")
-        return EMPTY;
-      })).subscribe((resp) => {
-        if (this.selectedGroceryListItem) {
-          this.selectedGroceryListItem.results = resp
-          this.selectedGroceryListItem.searchState = searchStateEnum.SEARCHED;
-        }
-      })
-    } else {
-      this.addNotification(errors)
+  public get SupermarketEnum() {
+    return SupermarketEnum
+  }
+  private checkAuth() {
+    if (!this.authService.authToken) {
+      this.router.navigate(["/", "login"])
     }
   }
-  public toggleSupermarket(event: Event, supermarket: string) {
-    const index = this.selectedSupermarkets.findIndex((value) => value == supermarket)
-    if (index != -1) {
-      this.selectedSupermarkets.splice(index, 1);
-    } else {
-      this.selectedSupermarkets.push(supermarket);
-    }
-    localStorage.setItem("selectedSupermarkets", JSON.stringify(this.selectedSupermarkets))
-  }
+
 
   public toggleAddGroceryListModal() {
     const modal = (document.getElementById("addGroceryListItemModal") as HTMLDialogElement)
@@ -142,28 +113,40 @@ export class GrocerylistComponent {
       modal.close()
     }
   }
+  public toggleOptionsModal() {
+    if (!this.optionsMenuDialog.nativeElement.open) {
+      this.optionsMenuDialog.nativeElement.showModal()
+    } else {
+      this.optionsMenuDialog.nativeElement.close()
+    }
+  }
   public addGroceryListItem() {
     if (this.newGroceryListItemName.value) {
-      this.selectedGroceryListItem = { name: this.newGroceryListItemName.value, SupermarketDataDict: {}, searchState: searchStateEnum.NO_SEARCH, searchQuery: this.newGroceryListItemName.value }
-      console.log(this.selectedGroceryListItem)
-      this.groceryListItems.push(this.selectedGroceryListItem)
-      this.searchQuery.setValue(this.newGroceryListItemName.value)
-      this.newGroceryListItemName.setValue('')
-      this.newGroceryListSearchQuery.setValue('')
-      this.toggleAddGroceryListModal()
+      const newName = this.newGroceryListItemName.value
+      const searchQuery = newName
+      this.groceryService.createGroceryListItem(newName, this.id, searchQuery).pipe(catchError(() => {
+        return EMPTY
+      })).subscribe((response) => {
+        this.selectedGroceryListItem = { name: newName, supermarketDataDict: {}, searchState: searchStateEnum.NO_SEARCH, searchQuery: searchQuery, groceryListItemId: response.id }
+        console.log(this.selectedGroceryListItem)
+        this.groceryListItems.push(this.selectedGroceryListItem)
+        // this.searchQuery.setValue(this.newGroceryListItemName.value)
+        this.newGroceryListItemName.setValue('')
+        this.newGroceryListSearchQuery.setValue('')
+        this.toggleAddGroceryListModal()
+      })
     } else {
       console.log(0)
     }
   }
-
   public calculateMinTotal() {
     let total = 0;
     for (let i = 0; i < this.groceryListItems.length; i++) {
       const entries = Object.entries(
-        this.groceryListItems[i].SupermarketDataDict
+        this.groceryListItems[i].supermarketDataDict
       )
       if (entries.length > 0) {
-        console.log("Calculating min price for: ", this.groceryListItems[i].name)
+        // console.log("Calculating min price for: ", this.groceryListItems[i].name)
         const supermarketMinPricePair = entries.reduce((previousValue, currentValue) => ((currentValue[1].price) < previousValue.price ? { "supermarket": currentValue[0], "price": currentValue[1].price } : previousValue), { "supermarket": entries[0][0], "price": entries[0][1].price })
         total += supermarketMinPricePair.price;
       }
@@ -182,10 +165,12 @@ export class GrocerylistComponent {
   }
 
   public removeGroceryListItem(index: number) {
-    console.log(index)
+    this.groceryService.deleteGroceryListItem(this.groceryListItems[index].groceryListItemId).pipe(catchError(() => {
+      console.log("Grocery List Item delete failed");
+      return EMPTY
+    })).subscribe(() => console.log("Grocery List Item deleted")
+    )
     this.groceryListItems.splice(index, 1)
-    console.log(this.groceryListItems)
-    console.log("Removing item")
   }
 
   public selectGroceryListItem(index: number) {
@@ -194,7 +179,7 @@ export class GrocerylistComponent {
     ) {
       this.selectedGroceryListItem = null;
     } else {
-      this.searchQuery.setValue(this.groceryListItems[index].searchQuery)
+      // this.searchQuery.setValue(this.groceryListItems[index].searchQuery)
       this.selectedGroceryListItem = this.groceryListItems[index]
     }
 
@@ -205,13 +190,6 @@ export class GrocerylistComponent {
     this.selectedGroceryListItem = null;
   }
 
-  public selectCategory(value: string) {
-    this.selectedCategory = value
-  }
-
-  public selectSort(value: string) {
-    this.selectedSort = value;
-  }
 
   /**
    * Creates a new Notification
@@ -220,9 +198,5 @@ export class GrocerylistComponent {
     this.notifications.push(messages)
   }
 
-  public logOut() {
-    this.authService.authToken = "";
-    this.router.navigate(["/", "login"])
-  }
 
 }

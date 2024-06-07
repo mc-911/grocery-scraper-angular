@@ -1,5 +1,5 @@
 :host {
-    border: 1px solid black;
+    /* border: 1px solid black; */
     height: 35px;
     display: flex;
     flex-direction: column;
@@ -8,7 +8,8 @@
     width: 150px;
     border-radius: 5px;
     position: relative;
-    background-color: white;
+    background-color: var(--secondary-color);
+    color: var(--text-color);
 }
 
 .dropdown-options {
@@ -18,7 +19,8 @@
     align-items: center;
     width: 100%;
     position: absolute;
-    border: 1px solid black;
+    border: 1px solid var(--primary-color);
+    /* background-color: var(--secondary-color); */
     background-color: inherit;
 }
 

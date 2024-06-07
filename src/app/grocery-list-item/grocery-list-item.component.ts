@@ -3,27 +3,21 @@ import { PacknSaveSvgComponent } from '../packn-save-svg/packn-save-svg.componen
 import { CountdownSvgComponent } from '../countdown-svg/countdown-svg.component';
 import { NgFor, NgSwitch, NgSwitchCase } from '@angular/common';
 import { NewWorldSvgComponent } from '../new-world-svg/new-world-svg.component';
-import { searchStateEnum } from '../grocerylist/grocerylist.component';
+import { searchStateEnum } from '../grocery-list-search/grocery-list-search.component';
 import { GroceryItemData, GrocerySearchResponse } from '../grocery.service';
 
 export enum SupermarketEnum {
-  PAKNSAVE,
-  COUNTDOWN,
-  NEW_WORLD
+  PAKNSAVE = "paknsave",
+  COUNTDOWN = "countdown",
+  NEW_WORLD = "newworld"
 }
-type GroceryItemSupermarketData = {
-  price: number,
-  supermarket: SupermarketEnum
-  content: string
-  productCode: string,
-}
-
 export type GroceryListItemData = {
   name: string,
-  SupermarketDataDict: { [key: number]: GroceryItemSupermarketData },
+  supermarketDataDict: { [key: string]: GroceryItemData },
   results?: GrocerySearchResponse,
   searchState: searchStateEnum,
   searchQuery: string
+  groceryListItemId: string
 }
 @Component({
   selector: 'app-grocery-list-item',
@@ -33,19 +27,24 @@ export type GroceryListItemData = {
   styleUrl: './grocery-list-item.component.css'
 })
 export class GroceryListItemComponent {
-  @Input() data: GroceryListItemData = { name: '', SupermarketDataDict: {}, searchState: searchStateEnum.NO_SEARCH, searchQuery: '' }
+  @Input({ required: true }) data!: GroceryListItemData;
+  @Input({ required: true }) index!: number
+  @Input()
+  @HostBinding('class')
+  class = ''
   @Output() removeItemEvent = new EventEmitter<number>();
   @Output() selectItemEvent = new EventEmitter<number>();
-  @Input() index = 0;
-  @Input()
-  @HostBinding('style.--border-color')
-  borderColor = 'black'
-  supermarketClassList = ['paknsave-bg', 'countdown-bg', 'newworld-bg']
+  supermarketClassList = { "paknsave": 'paknsave-bg', "countdown": 'countdown-bg', "newworld": 'newworld-bg' }
+
+
+  public get SupermarketEnum() {
+    return SupermarketEnum
+  }
   /**
    * getValueArray
    */
   public getSupermarketDataArray() {
-    return Object.values(this.data.SupermarketDataDict);
+    return Object.values(this.data.supermarketDataDict);
   }
 
   /**

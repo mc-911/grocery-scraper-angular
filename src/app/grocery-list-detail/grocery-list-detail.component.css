@@ -1,0 +1,28 @@
+:host {
+    width: 65%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+
+.supermarket {
+    display: flex;
+    flex-direction: column;
+}
+
+.supermarketTitle {
+    font-size: 1.1rem;
+}
+
+.groceryListItem {
+    display: flex;
+    flex-direction: column;
+}
+
+.groceryListItemName {
+    font-size: 1rem;
+}
+
+.groceryListItemSupermarketInfoName {
+    font-size: 1rem;
+}

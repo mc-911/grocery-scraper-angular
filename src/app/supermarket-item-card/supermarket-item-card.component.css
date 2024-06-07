@@ -1,13 +1,15 @@
 /**Card**/
-.supermarket-card {
+:host {
     display: flex;
     flex-direction: column;
     width: 350px;
     height: 300px;
-    border: 1px solid black;
+    /* border: 1px solid black; */
     border-radius: 10px;
     align-items: center;
     overflow: hidden;
+    flex-shrink: 0;
+    background-color: var(--secondary-color);
 }
 
 .supermarket-card-header {
@@ -62,7 +64,7 @@
 .supermarket-card-info {
     height: 15%;
     width: 100%;
-    border-top: 1px solid black;
+    /* border-top: 1px solid black; */
     display: flex;
     flex-direction: row;
     overflow: hidden;
@@ -90,15 +92,7 @@
     justify-content: center;
 }
 
-.paknsave-image {
-    height: 90%;
-    object-fit: scale-down;
-}
 
-.countdown-image {
-    height: 100%;
-    object-fit: scale-down;
-}
 
 .supermarket-card-quantity {
     width: 50%;
@@ -111,7 +105,7 @@
     /* padding-left: 8px; */
     box-sizing: border-box;
     gap: 4px;
-    border-left: 1px solid black
+    /* border-left: 1px solid black */
 }
 
 .supermarket-card-quantity-input {
@@ -130,7 +124,7 @@
 }
 
 .supermarket-card-select-btn {
-    border-top: 1px solid black;
+    /* border-top: 1px solid black; */
     height: 15%;
     width: 100%;
     display: flex;
@@ -149,4 +143,8 @@ a {
     text-decoration: none;
     color: inherit;
     height: 75%;
+}
+
+svg {
+    fill: var(--text-color);
 }

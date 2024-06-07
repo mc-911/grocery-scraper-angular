@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 
 interface location {
   latitude: number
-  longtitude: number
+  longitude: number
 }
 @Injectable({
   providedIn: 'root'

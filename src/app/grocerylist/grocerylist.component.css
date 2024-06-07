@@ -3,6 +3,10 @@
     flex-direction: row;
 }
 
+.selected {
+    --border-color: var(--tertiary-color);
+}
+
 .grocerylist-container {
     height: 100vh;
     width: 100vw;
@@ -14,8 +18,8 @@
 .grocerylist {
     width: 35%;
     height: 100%;
-    background: white;
-    border-right: 1px solid black;
+    background: var(--secondary-color);
+    border-right: 1px solid var(--primary-color);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -35,7 +39,7 @@
 
 .grocerylist-items-container {
     width: 100%;
-    border-top: 1px solid black;
+    /* border-top: 1px solid black; */
     padding-top: 12px;
     padding-bottom: 12px;
     display: flex;
@@ -94,24 +98,12 @@
     border-top: 1px solid #000000;
 }
 
-.countdown-bg {
-    background-color: #8FC740;
-}
-
-.paknsave-bg {
-    background-color: #FFD600;
-}
-
-.newworld-bg {
-    background-color: #E11A2C;
-}
-
 .grocery-item-price-item {
     width: 100%;
 }
 
 .grocerylist-price-container {
-    border-top: 1px solid black;
+    /* border-top: 1px solid black; */
     height: 80px;
     width: 100%;
     display: flex;
@@ -130,7 +122,7 @@
     justify-content: center;
     align-items: center;
     overflow: hidden;
-    background-color: green;
+    background-color: var(--primary-color);
     border-radius: 10px;
     box-sizing: border-box;
     margin-top: 3px;
@@ -143,7 +135,7 @@
 }
 
 .grocerylist-add-btn>svg>path {
-    stroke: white;
+    stroke: var(--tertiary-color);
 }
 
 .addGroceryListItemFlexContainer {
@@ -204,177 +196,7 @@ input {
 /** Search Section **/
 
 
-.search-container {
-    width: 65%;
-    display: flex;
-    flex-direction: column;
-    overflow-x: hidden;
-}
 
-.search-section {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    padding-top: 8px;
-    gap: 8px;
-    height: 92px;
-    flex-shrink: 0;
-}
-
-.search-bar-container {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    position: relative;
-}
-
-.search-bar {
-    width: 95%;
-    height: 40px;
-    font-size: 1rem;
-    border-radius: 14px;
-    border-width: 1px;
-    padding-left: 45px;
-    box-sizing: border-box;
-    gap: 4px;
-}
-
-.search-icon {
-    position: absolute;
-    left: 3.5%;
-    top: 0px;
-    bottom: 0px;
-    margin: auto;
-}
-
-.supermarket-btn {
-    height: 35px;
-    width: 80px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    border-radius: 10px;
-    cursor: pointer;
-}
-
-.supermarket-btn-container {
-    display: flex;
-    flex-direction: row;
-    gap: 4px;
-}
-
-.search-options-container {
-    display: flex;
-    width: 100%;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-    padding-left: 2.5%;
-    padding-right: 2.5%;
-    box-sizing: border-box;
-}
-
-.sort-by-category-container {
-    display: flex;
-    flex-direction: row;
-    gap: 4px;
-}
-
-
-.results-container {
-    flex-grow: 1;
-    border-top: 1px solid black;
-    display: flex;
-    flex-direction: column;
-    overflow-x: hidden;
-    overflow-y: auto;
-}
-
-/* .results-container>.supermarket-container:not(:first-child) {
-    border-top: 1px solid black;
-} */
-
-.supermarket-container {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    border-bottom: 1px solid black;
-}
-
-.results-container:last-child {
-    border-bottom: none;
-}
-
-.supermarket-name {
-    font-size: 1.5rem;
-    height: 40px;
-    padding-left: 8px;
-    flex-direction: column;
-    display: flex;
-    justify-content: center;
-
-}
-
-
-
-.supermarket-results-container {
-    border-top: 1px solid black;
-    flex-grow: 1;
-    display: flex;
-    flex-direction: row;
-    gap: 8px;
-    padding-top: 8px;
-    padding-bottom: 8px;
-    padding-left: 8px;
-    padding-right: 8px;
-    overflow-x: auto;
-}
-
-
-.disabled {
-    background: lightgray;
-}
-
-.disabled>* {
-    filter: grayscale(100%);
-}
-
-
-.enter-query-message {
-    flex-grow: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    font-size: 2rem;
-}
-
-@keyframes spinAnimation {
-    from {
-        transform: rotate(0deg);
-    }
-
-    to {
-        transform: rotate(360deg);
-    }
-}
-
-.spin {
-    animation: 2s linear 0s infinite;
-    animation-name: spinAnimation;
-    height: 5%;
-}
-
-.spinner-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-grow: 1;
-    overflow: hidden;
-}
 
 .noSelectedGroceryListItem {
     display: flex;
@@ -397,7 +219,7 @@ input {
     flex-direction: row;
     height: 80px;
     font-size: xx-large;
-    border-top: 1px solid black;
+    /* border-top: 1px solid black; */
     width: 100%;
 }
 
@@ -410,32 +232,8 @@ input {
 }
 
 
-#settingsDialog,
-#selectPreferencesDialog,
-#addGroceryListItemModal {
-    border-width: 0px;
-    position: absolute;
-}
 
 
-.menuContainer {
-    display: flex;
-    flex-direction: column;
-    height: 400px;
-    width: 450px;
-    align-items: center;
-
-}
-
-dialog,
-dialog:focus,
-dialog:active {
-    border-color: white;
-    outline: none;
-}
-
-
-.search-settings-container {}
 
 .settings-subtitle {
     display: flex;
@@ -462,53 +260,10 @@ dialog:active {
     flex-grow: 1;
 }
 
-.menuHeader {
-    width: 100%;
-    display: flex;
-    flex-direction: row;
-    justify-content: start;
-    align-items: center;
-    margin-bottom: 12px;
-    font-weight: 500;
-}
 
-.menuSubheader {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
 
-.menu-header-name {
-    flex-grow: 1;
-    height: 50px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: larger;
-}
 
-.return-btn {
-    width: 50px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-sizing: border-box;
-    cursor: pointer;
-}
 
-.mobile-only {
-    display: none;
-}
-
-.absolute {
-    position: absolute;
-}
-
-.search-container-header {
-    margin-top: 8px;
-    padding-left: 10px;
-    width: 100%;
-}
 
 
 

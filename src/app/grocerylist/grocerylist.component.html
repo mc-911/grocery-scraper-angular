@@ -1,11 +1,11 @@
 <div class="grocerylist-container">
     <div class="grocerylist" [style]="mobile && selectedGroceryListItem ? 'display: none;' : ''">
-        <div class="grocerylist-title">Grocery List</div>
+        <div class="grocerylist-title">{{name}}</div>
         <div class="grocerylist-items-container">
             <app-grocery-list-item *ngFor="let item of groceryListItems; index as i" [data]="item"
                 (removeItemEvent)="removeGroceryListItem($event)" [index]="i"
                 (selectItemEvent)="selectGroceryListItem($event)"
-                [borderColor]="item == selectedGroceryListItem ? 'green' : 'black'" />
+                [class]="item == selectedGroceryListItem ? 'selected' : ''" />
         </div>
         <div class="grocerylist-add-btn" (click)="toggleAddGroceryListModal()">
             <svg stroke-width="1.5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" color="#000000">
@@ -13,110 +13,27 @@
                     stroke-linejoin="round"></path>
             </svg>
         </div>
-        <app-total-container [total]="getFormattedMinTotal()" (cogOnClickEvent)="toggleSettingsModal()" />
+        <app-total-container [total]="getFormattedMinTotal()" (cogOnClickEvent)="toggleOptionsModal()" />
     </div>
-    <div class="search-container" [style]="mobile && selectedGroceryListItem ? 'display: flex;' : ''"
-        *ngIf="selectedGroceryListItem != null; else noSelectedGroceryListItem">
-        <div class="search-container-header">
-            <div (click)="unselectGroceryListItem()" class="return-btn mobile-only">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" style="fill: rgba(0, 0, 0, 1);">
-                    <path d="M21 11H6.414l5.293-5.293-1.414-1.414L2.586 12l7.707 7.707 1.414-1.414L6.414 13H21z"></path>
-                </svg>
-            </div>
-        </div>
-        <div class="search-section">
-            <div class="search-bar-container">
-                <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                    style="fill: rgba(0, 0, 0, 1);">
-                    <path
-                        d="M10 18a7.952 7.952 0 0 0 4.897-1.688l4.396 4.396 1.414-1.414-4.396-4.396A7.952 7.952 0 0 0 18 10c0-4.411-3.589-8-8-8s-8 3.589-8 8 3.589 8 8 8zm0-14c3.309 0 6 2.691 6 6s-2.691 6-6 6-6-2.691-6-6 2.691-6 6-6z">
-                    </path>
-                </svg>
-                <input type="text" class="search-bar" (keyup.enter)="search()" [formControl]="searchQuery" />
-            </div>
-            <div class="search-options-container">
-
-                <div class="supermarket-btn-container">
-                    <div class="paknsave-bg supermarket-btn"
-                        [class]="selectedSupermarkets.includes('paknsave') ? '' : 'disabled' "
-                        (mouseup)="toggleSupermarket($event, 'paknsave')">
-                        <app-packn-save-svg class="price-logo"></app-packn-save-svg>
-                    </div>
-                    <div class="countdown-bg supermarket-btn"
-                        [class]="selectedSupermarkets.includes('countdown') ? '' : 'disabled' "
-                        (mouseup)="toggleSupermarket($event, 'countdown')">
-                        <app-countdown-svg class="price-logo"></app-countdown-svg>
-                    </div>
-                    <div class="newworld-bg supermarket-btn"
-                        [class]="selectedSupermarkets.includes('newworld') ? '' : 'disabled' "
-                        (mouseup)="toggleSupermarket($event, 'newworld')">
-                        <app-new-world-svg class="price-logo"></app-new-world-svg>
-                    </div>
-                </div>
-                <div class="sort-by-category-container">
-                    <app-dropdown (selectOptionEvent)="selectCategory($event)" [options]="categories"></app-dropdown>
-                    <app-dropdown (selectOptionEvent)="selectSort($event)" [options]="sortingOptions"></app-dropdown>
-                </div>
-            </div>
-        </div>
-        <ng-container [ngSwitch]="selectedGroceryListItem.searchState">
-            <div *ngSwitchCase="0" class="enter-query-message">Enter your search query for
-                "{{selectedGroceryListItem.name}}"
-            </div>
-            <div *ngSwitchCase="1" class="spinner-container">
-                <svg class="spin" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
-                    style="fill: rgba(0, 0, 0, 1);">
-                    <path
-                        d="M12 22c5.421 0 10-4.579 10-10h-2c0 4.337-3.663 8-8 8s-8-3.663-8-8c0-4.336 3.663-8 8-8V2C6.579 2 2 6.58 2 12c0 5.421 4.579 10 10 10z">
-                    </path>
-                </svg>
-            </div>
-            <div *ngSwitchCase="2" class="results-container">
-                <div *ngIf="selectedSupermarkets.includes('paknsave') && selectedGroceryListItem.results"
-                    class="supermarket-container">
-                    <div class="supermarket-name">PAK'nSAVE</div>
-                    <div class="supermarket-results-container">
-                        <app-supermarket-item-card #showPakNSaveResults
-                            *ngFor="let item of selectedGroceryListItem.results['paknsave']"
-                            [selectedGroceryListItem]="selectedGroceryListItem" [supermarket]="0" [data]="item" />
-                        <div *ngIf="selectedGroceryListItem.results.paknsave?.length == 0;" class="noResultsMessage">
-                            No Results</div>
-                    </div>
-                </div>
-                <div *ngIf="selectedSupermarkets.includes('countdown') && selectedGroceryListItem.results"
-                    class="supermarket-container">
-                    <div class="supermarket-name">Countdown</div>
-                    <div class="supermarket-results-container">
-                        <app-supermarket-item-card *ngFor="let item of selectedGroceryListItem.results['countdown']"
-                            [selectedGroceryListItem]="selectedGroceryListItem" [supermarket]="1" [data]="item" />
-                        <div *ngIf="selectedGroceryListItem.results.countdown?.length == 0;" class="noResultsMessage">
-                            No Results</div>
-                    </div>
-                </div>
-                <div *ngIf="selectedSupermarkets.includes('newworld') && selectedGroceryListItem.results"
-                    class="supermarket-container">
-                    <div class="supermarket-name">New World</div>
-                    <div class="supermarket-results-container">
-                        <app-supermarket-item-card *ngFor="let item of selectedGroceryListItem.results['newworld']"
-                            [selectedGroceryListItem]="selectedGroceryListItem" [supermarket]="2" [data]="item" />
-                        <div *ngIf="selectedGroceryListItem.results.newworld?.length == 0;" class="noResultsMessage">
-                            No Results</div>
-                    </div>
-                </div>
-            </div>
-        </ng-container>
-        <app-total-container [total]="getFormattedMinTotal()" class="mobile-only" />
-    </div>
+    <app-grocery-list-search class="search-container"
+        [style]="mobile && selectedGroceryListItem ? 'display: flex;' : ''"
+        *ngIf="selectedGroceryListItem != null; else noSelectedGroceryListItem"
+        [selectedGroceryListItem]="selectedGroceryListItem" [total]="getFormattedMinTotal()"
+        (returnBtnClickEvent)="unselectGroceryListItem()" (addNotificationEvent)="addNotification($event)"
+        [mobile]="mobile" />
     <ng-template #noSelectedGroceryListItem>
         <div class="noSelectedGroceryListItem">
             Add or Select a Grocery Item to start searching
         </div>
     </ng-template>
+    <ng-template #groceryListDetail>
+        <app-grocery-list-detail [groceryListItems]="groceryListItems" />
+    </ng-template>
     <dialog id="addGroceryListItemModal">
         <div class="menuContainer">
             <div class="menuHeader">
                 <div class="return-btn absolute" (click)="toggleAddGroceryListModal()">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" style="fill: rgba(0, 0, 0, 1);">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                         <path d="M21 11H6.414l5.293-5.293-1.414-1.414L2.586 12l7.707 7.707 1.414-1.414L6.414 13H21z">
                         </path>
                     </svg>
@@ -136,7 +53,7 @@
                     <input [formControl]="newGroceryListSearchQuery" id="groceryListItemSearchQuery" type="text" />
                 </div> -->
             </div>
-            <div class="green-bg btn" (click)="addGroceryListItem()">
+            <div class="primary-bg btn" (click)="addGroceryListItem()">
                 Add
             </div>
         </div>
@@ -146,7 +63,7 @@
         <div class="menuContainer">
             <div class="menuHeader">
                 <div class="return-btn absolute" (click)="toggleSettingsModal()">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" style="fill: rgba(0, 0, 0, 1);">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                         <path d="M21 11H6.414l5.293-5.293-1.414-1.414L2.586 12l7.707 7.707 1.414-1.414L6.414 13H21z">
                         </path>
                     </svg>
@@ -169,12 +86,12 @@
                     </div>
                 </div>
             </div>
-            <div class="red-bg btn" (click)="logOut()">
+            <div class="red-bg btn" (click)="userService.logOut()">
                 Log out
             </div>
         </div>
     </dialog>
-    <dialog #setPreferencesDialog id="selectPreferencesDialog">
+    <dialog #setPreferencesDialog>
         <div class="menuContainer">
             <div class="menuHeader">
                 <div class="menu-header-name">
@@ -185,27 +102,75 @@
             <div class="selectPreferencesSubcontainer">
                 <div class="selectGroceryStoresContainer">
                     <div [class]="selectedSupermarkets.includes('paknsave') ? 'paknsave-bg' : 'disabled' "
-                        (mouseup)="toggleSupermarket($event, 'paknsave')">
+                        (mouseup)="groceryService.selectSupermarket($event, 'paknsave')">
                         <app-packn-save-svg class="price-logo-lg" />
                     </div>
                     <div [class]="selectedSupermarkets.includes('countdown') ? 'countdown-bg' : 'disabled' "
-                        (mouseup)="toggleSupermarket($event, 'countdown')">
+                        (mouseup)="groceryService.selectSupermarket($event, 'countdown')">
                         <app-countdown-svg class="price-logo-lg" />
                     </div>
                     <div [class]="selectedSupermarkets.includes('newworld') ? 'newworld-bg' : 'disabled' "
-                        (mouseup)="toggleSupermarket($event, 'newworld')">
+                        (mouseup)="groceryService.selectSupermarket($event, 'newworld')">
                         <app-new-world-svg class="price-logo-lg" />
                     </div>
                 </div>
             </div>
-            <div class="green-bg btn" (click)="setPreferencesDialog.close()">
+            <div class="primary-bg btn" (click)="setPreferencesDialog.close()">
                 Continue
             </div>
         </div>
     </dialog>
-    <div>
-
-    </div>
+    <dialog #optionsMenuDialog>
+        <div class="optionsMenu">
+            <div class="menuHeader">
+                <div class="return-btn absolute" (click)="toggleOptionsModal()">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M21 11H6.414l5.293-5.293-1.414-1.414L2.586 12l7.707 7.707 1.414-1.414L6.414 13H21z">
+                        </path>
+                    </svg>
+                </div>
+                <div class="menu-header-name">
+                    Menu
+                </div>
+            </div>
+            <div class="optionsMenuItems">
+                <div class="optionsMenuItem">
+                    <div class="iconContainer">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                            <path
+                                d="M20 5h-8.586L9.707 3.293A.997.997 0 0 0 9 3H4c-1.103 0-2 .897-2 2v14c0 1.103.897 2 2 2h16c1.103 0 2-.897 2-2V7c0-1.103-.897-2-2-2zM4 19V7h16l.002 12H4z">
+                            </path>
+                        </svg>
+                    </div>
+                    <div class="label">
+                        Load List
+                    </div>
+                </div>
+                <div class="optionsMenuItem">
+                    <div class="iconContainer">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                            <path d="M19 15v-3h-2v3h-3v2h3v3h2v-3h3v-2h-.937zM4 7h11v2H4zm0 4h11v2H4zm0 4h8v2H4z">
+                            </path>
+                        </svg>
+                    </div>
+                    <div class="label">New List</div>
+                </div>
+                <div class="optionsMenuItem">
+                    <div class="iconContainer">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                            <path
+                                d="m2.344 15.271 2 3.46a1 1 0 0 0 1.366.365l1.396-.806c.58.457 1.221.832 1.895 1.112V21a1 1 0 0 0 1 1h4a1 1 0 0 0 1-1v-1.598a8.094 8.094 0 0 0 1.895-1.112l1.396.806c.477.275 1.091.11 1.366-.365l2-3.46a1.004 1.004 0 0 0-.365-1.366l-1.372-.793a7.683 7.683 0 0 0-.002-2.224l1.372-.793c.476-.275.641-.89.365-1.366l-2-3.46a1 1 0 0 0-1.366-.365l-1.396.806A8.034 8.034 0 0 0 15 4.598V3a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v1.598A8.094 8.094 0 0 0 7.105 5.71L5.71 4.904a.999.999 0 0 0-1.366.365l-2 3.46a1.004 1.004 0 0 0 .365 1.366l1.372.793a7.683 7.683 0 0 0 0 2.224l-1.372.793c-.476.275-.641.89-.365 1.366zM12 8c2.206 0 4 1.794 4 4s-1.794 4-4 4-4-1.794-4-4 1.794-4 4-4z">
+                            </path>
+                        </svg>
+                    </div>
+                    <div class="label">Settings</div>
+                </div>
+            </div>
+            <div class="red-bg btn" (click)="userService.logOut()">
+                Log out
+            </div>
+        </div>
+    </dialog>
     <app-notification-container [messages]="notifications"></app-notification-container>
 
 </div>

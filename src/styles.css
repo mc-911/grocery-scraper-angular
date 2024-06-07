@@ -1,6 +1,27 @@
 /* You can add global styles to this file, and also import other style files */
 
+
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap');
+
+:root {
+    --primary-color: : white;
+    --secondary-color: grey;
+    --text-color: black;
+    --border-color: black;
+    --tertiary-color: aqua;
+    background: var(--primary-color);
+    color: var(--text-color);
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --primary-color: #222831;
+        --secondary-color: #31363F;
+        --text-color: #CCD1D1;
+        --border-color: #CCD1D1;
+        --tertiary-color: aqua;
+    }
+}
 
 body {
     margin: 0px;
@@ -61,7 +82,7 @@ body {
 
 .input-container>input:active,
 .input-container>input:focus {
-    outline: cyan;
+    outline: none;
     border-color: cyan;
 }
 
@@ -75,6 +96,14 @@ body {
 
 .green-bg {
     background-color: green;
+}
+
+.primary-bg {
+    background-color: var(--primary-color);
+}
+
+.secondary-bg {
+    background-color: var(--secondary-color);
 }
 
 
@@ -177,4 +206,151 @@ form {
         "wdth" 500;
     font-weight: 700;
     color: aqua;
+}
+
+.optionsMenuItems {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    gap: 8px;
+}
+
+.optionsMenuItem {
+    display: flex;
+    flex-direction: column;
+    background-color: var(--primary-color);
+    border-radius: 10px;
+    width: 150px;
+    height: 150px;
+    fill: var(--text-color);
+    cursor: pointer;
+}
+
+.optionsMenuItem>.label {
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+
+.iconContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100px;
+    width: 100%;
+}
+
+.iconContainer>svg {
+    height: 80%;
+}
+
+dialog {
+    border-width: 0px;
+    position: absolute;
+    background-color: var(--secondary-color);
+    color: var(--text-color);
+    fill: var(--text-color);
+}
+
+dialog::backdrop {
+    /* background-color: black;
+    opacity: 0.5; */
+    backdrop-filter: blur(10px);
+}
+
+.optionsMenu {
+    display: flex;
+    flex-direction: column;
+    height: 400px;
+    width: 450px;
+    align-items: center;
+    background-color: var(--secondary-color);
+    color: var(--text-color);
+    justify-content: space-between;
+}
+
+.menuContainer {
+    display: flex;
+    flex-direction: column;
+    height: 400px;
+    width: 450px;
+    align-items: center;
+    background-color: var(--secondary-color);
+    color: var(--text-color);
+}
+
+
+dialog,
+dialog:focus,
+dialog:active {
+    border-color: white;
+    outline: none;
+}
+
+.menuHeader {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: start;
+    align-items: center;
+    margin-bottom: 12px;
+    font-weight: 500;
+}
+
+.menuSubheader {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.menu-header-name {
+    flex-grow: 1;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: larger;
+}
+
+.return-btn {
+    width: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    cursor: pointer;
+    fill: var(--text-color);
+}
+
+.absolute {
+    position: absolute;
+}
+
+.paknsave-image {
+    height: 90%;
+    object-fit: scale-down;
+}
+
+.countdown-image {
+    height: 80%;
+    object-fit: scale-down;
+}
+
+.countdown-bg {
+    background-color: #8FC740;
+}
+
+.paknsave-bg {
+    background-color: #FFD600;
+}
+
+.newworld-bg {
+    background-color: #E11A2C;
+}
+
+.mobile-only {
+    display: none;
 }

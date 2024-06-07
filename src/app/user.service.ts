@@ -2,6 +2,8 @@ import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http
 import { Injectable } from '@angular/core';
 import { environment } from '../environments/environment';
 import { catchError, throwError } from 'rxjs';
+import { Router } from '@angular/router';
+import { AuthService } from './auth.service';
 
 interface LoginResponse {
   token?: string
@@ -20,7 +22,7 @@ enum LoginErrorCode {
 })
 export class UserService {
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private router: Router, private authService: AuthService) { }
 
   loginEndpoint = "/login"
   registrationEndpoint = "/register"
@@ -83,4 +85,8 @@ export class UserService {
     return this.http.post(environment.apiUrl + this.verifyEndpoint, {}, { headers }).pipe(catchError(this.handleVerifyUser))
   }
 
+  public logOut() {
+    this.authService.authToken = "";
+    this.router.navigate(["/", "login"])
+  }
 }

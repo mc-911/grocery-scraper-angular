@@ -4,7 +4,7 @@
     <div *ngFor="let item of getSupermarketDataArray()" class="supermarket-item"
         [class]="supermarketClassList[item.supermarket]">
         <div class="grocery-item-content">
-            <div class="">{{item.content}}</div>
+            <div class="">{{item.info}}</div>
         </div>
         <div class="grocery-item-price">
             <div class="">
@@ -13,9 +13,9 @@
         </div>
         <div class="grocery-item-logo ">
             <ng-container [ngSwitch]="item.supermarket">
-                <app-packn-save-svg *ngSwitchCase="0" class="price-logo"></app-packn-save-svg>
-                <app-countdown-svg *ngSwitchCase="1" class="price-logo"></app-countdown-svg>
-                <app-new-world-svg *ngSwitchCase="2" class="price-logo"></app-new-world-svg>
+                <app-packn-save-svg *ngSwitchCase="SupermarketEnum.PAKNSAVE" class="price-logo"></app-packn-save-svg>
+                <app-countdown-svg *ngSwitchCase="SupermarketEnum.COUNTDOWN" class="price-logo"></app-countdown-svg>
+                <app-new-world-svg *ngSwitchCase="SupermarketEnum.NEW_WORLD" class="price-logo"></app-new-world-svg>
             </ng-container>
         </div>
     </div>

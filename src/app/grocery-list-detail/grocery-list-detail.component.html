@@ -1,0 +1,21 @@
+<div class="supermarket">
+    <div class="supermarketTitle">
+        PAK'nSAVE
+    </div>
+    <div class="groceryListItems">
+        <div class="groceryListItem" *ngFor="let item of groceryListItems; index as i">
+            <div class="groceryListItemName">{{item.name}}</div>
+            <div *ngIf="!SupermarketEnum.PAKNSAVE in item.supermarketDataDict">
+                No Item selected for Pak N Save
+            </div>
+            <ng-template>
+                <div class="groceryListItemSupermarketInfoName">
+                    {{item.supermarketDataDict[SupermarketEnum.PAKNSAVE].name}}</div>
+                <div>
+                    <img [class]="getImageClass(SupermarketEnum.PAKNSAVE)"
+                        [src]="item.supermarketDataDict[SupermarketEnum.PAKNSAVE].imageUrl" />
+                </div>
+            </ng-template>
+        </div>
+    </div>
+</div>

@@ -52,7 +52,7 @@ export class LoginPageComponent {
             if (resp.isNewUser) {
               this.userService.isNewUser = resp.isNewUser
             }
-            this.router.navigate(["/", "grocerylist"])
+            this.router.navigate(["/", "home"])
           }
         })
       }

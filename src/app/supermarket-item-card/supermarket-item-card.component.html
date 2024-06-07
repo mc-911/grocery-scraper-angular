@@ -1,31 +1,36 @@
-<div class="supermarket-card">
-    <a [href]="data.productUrl">
-        <div class="supermarket-card-header">
-            <div class="supermarket-card-name">{{data.name}}
-            </div>
-            <div class="supermarket-card-subtitle">{{data.info}}</div>
+<a [href]="data.productUrl">
+    <div class="supermarket-card-header">
+        <div class="supermarket-card-name">{{name}}
         </div>
-        <div class="supermarket-card-image">
-            <img class="paknsave-image" [src]="data.imageUrl" />
+        <div class="supermarket-card-subtitle">{{data.info}}</div>
+    </div>
+    <div class="supermarket-card-image">
+        <img [class]="imageClass" [src]="data.imageUrl" />
+    </div>
+</a>
+<div class="supermarket-card-info">
+    <div class="supermarket-card-price">
+        <div class="supermarket-card-price-dollar">
+            ${{dollars}}
         </div>
-    </a>
-    <div class="supermarket-card-info">
-        <div class="supermarket-card-price">
-            <div class="supermarket-card-price-dollar">
-                ${{dollars}}
-            </div>
-            <div class="supermarket-card-price-cent">
-                {{cents + '0'.repeat(2 - cents.toString(10).length)}}
-            </div>
-        </div>
-        <div class="supermarket-card-quantity ">
-            <input class="supermarket-card-quantity-input" type="number" />
-            <div class="supermarket-card-metric">
-                {{data.metric}}
-            </div>
+        <div class="supermarket-card-price-cent">
+            {{cents + '0'.repeat(2 - cents.toString(10).length)}}
         </div>
     </div>
-    <div class="supermarket-card-select-btn" [class]="isSelected() ? 'selected' : ''" (click)="selectItem()">
-        {{isSelected() ? 'UNSELECT' : 'SELECT'}}
+    <div class="supermarket-card-quantity ">
+        <input class="supermarket-card-quantity-input" type="number" />
+        <div class="supermarket-card-metric">
+            {{data.metric}}
+        </div>
     </div>
+</div>
+<div class="supermarket-card-select-btn" [class]="selected ? 'selected' : ''" (click)="selectItem()">
+    <!-- {{isSelected() ? 'UNSELECT' : 'SELECT'}} -->
+    <svg *ngIf="!selected" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+        <path d="M19 11h-6V5h-2v6H5v2h6v6h2v-6h6z"></path>
+    </svg>
+    <svg *ngIf="selected" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+        <path d="m10 15.586-3.293-3.293-1.414 1.414L10 18.414l9.707-9.707-1.414-1.414z"></path>
+    </svg>
+
 </div>
