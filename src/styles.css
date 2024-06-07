@@ -354,3 +354,18 @@ dialog:active {
 .mobile-only {
     display: none;
 }
+
+.disabled {
+    background: lightgray;
+}
+
+.disabled>* {
+    filter: grayscale(100%);
+}
+
+.price-logo {
+    width: 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}

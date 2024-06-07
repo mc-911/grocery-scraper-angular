@@ -93,13 +93,8 @@ export class GroceryListSearchComponent {
     }
   }
   public toggleSupermarket(event: Event, supermarket: string) {
-    const index = this.selectedSupermarkets.findIndex((value) => value == supermarket)
-    if (index != -1) {
-      this.selectedSupermarkets.splice(index, 1);
-    } else {
-      this.selectedSupermarkets.push(supermarket);
-    }
-    this.groceryService.selectedSupermarkets = this.selectedSupermarkets
+    this.groceryService.toggleSupermarket(supermarket)
+    this.selectedSupermarkets = this.groceryService.selectedSupermarkets
   }
 
   public selectCategory(value: string) {

@@ -139,7 +139,7 @@ export class GroceryService {
 
 
 
-  public selectSupermarket(event: Event, supermarket: string) {
+  public toggleSupermarket(supermarket: string) {
     const selectedSupermarkets = this.selectedSupermarkets
     const index = selectedSupermarkets.findIndex((value) => value == supermarket)
     if (index != -1) {

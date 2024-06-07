@@ -39,7 +39,7 @@ export class GrocerylistComponent {
   @ViewChild("setPreferencesDialog") setPreferencesDialog!: ElementRef<HTMLDialogElement>
   @ViewChild("optionsMenuDialog") optionsMenuDialog!: ElementRef<HTMLDialogElement>
 
-  constructor(private el: ElementRef, public groceryService: GroceryService, private authService: AuthService, private router: Router, public userService: UserService, private locationService: LocationService, private route: ActivatedRoute) {
+  constructor(private el: ElementRef, private groceryService: GroceryService, private authService: AuthService, private router: Router, public userService: UserService, private locationService: LocationService, private route: ActivatedRoute) {
   }
 
   ngOnInit() {
@@ -198,5 +198,9 @@ export class GrocerylistComponent {
     this.notifications.push(messages)
   }
 
+  public toggleSupermarket(event: Event, supermarket: string) {
+    this.groceryService.toggleSupermarket(supermarket)
+    this.selectedSupermarkets = this.groceryService.selectedSupermarkets
+  }
 
 }

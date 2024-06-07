@@ -102,15 +102,15 @@
             <div class="selectPreferencesSubcontainer">
                 <div class="selectGroceryStoresContainer">
                     <div [class]="selectedSupermarkets.includes('paknsave') ? 'paknsave-bg' : 'disabled' "
-                        (mouseup)="groceryService.selectSupermarket($event, 'paknsave')">
+                        (mouseup)="toggleSupermarket($event, 'paknsave')">
                         <app-packn-save-svg class="price-logo-lg" />
                     </div>
                     <div [class]="selectedSupermarkets.includes('countdown') ? 'countdown-bg' : 'disabled' "
-                        (mouseup)="groceryService.selectSupermarket($event, 'countdown')">
+                        (mouseup)="toggleSupermarket($event, 'countdown')">
                         <app-countdown-svg class="price-logo-lg" />
                     </div>
                     <div [class]="selectedSupermarkets.includes('newworld') ? 'newworld-bg' : 'disabled' "
-                        (mouseup)="groceryService.selectSupermarket($event, 'newworld')">
+                        (mouseup)="toggleSupermarket($event, 'newworld')">
                         <app-new-world-svg class="price-logo-lg" />
                     </div>
                 </div>
