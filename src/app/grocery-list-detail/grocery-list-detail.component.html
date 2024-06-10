@@ -1,19 +1,45 @@
 <div class="supermarket">
-    <div class="supermarketTitle">
-        PAK'nSAVE
+    <div class="supermarketTitleContainer">
+        <div class="supermarketTitle">
+            Pak'nSave
+        </div>
+        <svg class="clipboard" (click)="copyMinGroceryList()" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path
+                d="M19 3h-2.25a1 1 0 0 0-1-1h-7.5a1 1 0 0 0-1 1H5c-1.103 0-2 .897-2 2v15c0 1.103.897 2 2 2h14c1.103 0 2-.897 2-2V5c0-1.103-.897-2-2-2zm0 17H5V5h2v2h10V5h2v15z">
+            </path>
+        </svg>
     </div>
     <div class="groceryListItems">
         <div class="groceryListItem" *ngFor="let item of groceryListItems; index as i">
-            <div class="groceryListItemName">{{item.name}}</div>
-            <div *ngIf="!SupermarketEnum.PAKNSAVE in item.supermarketDataDict">
+            <div class="groceryListItemNameContainer">
+                <div class="groceryListItemName">{{item.name}}</div>
+                <div (click)="removeGroceryListItem(i)" class="xMarkContainer"><svg class="xMark"
+                        xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path
+                            d="m16.192 6.344-4.243 4.242-4.242-4.242-1.414 1.414L10.535 12l-4.242 4.242 1.414 1.414 4.242-4.242 4.243 4.242 1.414-1.414L13.364 12l4.242-4.242z">
+                        </path>
+                    </svg></div>
+            </div>
+            <div class="noItemSelected"
+                *ngIf="!item.supermarketDataDict.hasOwnProperty(SupermarketEnum.PAKNSAVE); else supermarketItemInfo">
                 No Item selected for Pak N Save
             </div>
-            <ng-template>
-                <div class="groceryListItemSupermarketInfoName">
-                    {{item.supermarketDataDict[SupermarketEnum.PAKNSAVE].name}}</div>
-                <div>
-                    <img [class]="getImageClass(SupermarketEnum.PAKNSAVE)"
-                        [src]="item.supermarketDataDict[SupermarketEnum.PAKNSAVE].imageUrl" />
+            <ng-template #supermarketItemInfo>
+                <div class="supermarketInfo">
+                    <div class="groceryDataImage">
+                        <img [class]="getImageClass(SupermarketEnum.PAKNSAVE)"
+                            [src]="item.supermarketDataDict[SupermarketEnum.PAKNSAVE].imageUrl" />
+                    </div>
+                    <div class="supermarketInfoSubcontainer">
+                        <div class="groceryDataName">
+                            {{item.supermarketDataDict[SupermarketEnum.PAKNSAVE].name}}</div>
+                        <div class="groceryDataInfo">
+                            {{item.supermarketDataDict[SupermarketEnum.PAKNSAVE].info}}</div>
+                        <div class="groceryDataPrice">
+                            {{item.supermarketDataDict[SupermarketEnum.PAKNSAVE].price}}</div>
+                        <div class="groceryDataQuantity">
+                            {{item.supermarketDataDict[SupermarketEnum.PAKNSAVE].quantity}}</div>
+                    </div>
                 </div>
             </ng-template>
         </div>

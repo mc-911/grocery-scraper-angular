@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
 
-  constructor() { }
+  constructor(private router: Router) { }
 
   set authToken(authToken: string) {
     localStorage.setItem('authToken', authToken);
@@ -14,5 +15,11 @@ export class AuthService {
   get authToken() {
     const token = localStorage.getItem("authToken")
     return token ? token : ''
+  }
+
+  checkAuth() {
+    if (!this.authToken) {
+      this.router.navigate(["/", "login"])
+    }
   }
 }

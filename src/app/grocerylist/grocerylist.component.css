@@ -231,42 +231,6 @@ input {
     padding-left: 24px;
 }
 
-
-
-
-
-.settings-subtitle {
-    display: flex;
-    width: 100%;
-}
-
-.settings-item-input-description-container {
-    display: flex;
-    flex-direction: row;
-    gap: 4px;
-}
-
-.settings-item {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-}
-
-.settings-subcontainer {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    width: 100%;
-    flex-grow: 1;
-}
-
-
-
-
-
-
-
-
 @media (max-width: 480px) {
 
     .search-container,

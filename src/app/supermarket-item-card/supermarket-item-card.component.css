@@ -44,8 +44,9 @@
 .supermarket-card-price {
     display: flex;
     flex-direction: row;
-    width: 50%;
-    padding-left: 8px;
+    /* width: 50%; */
+    width: 100%;
+    /* padding-left: 8px; */
     box-sizing: border-box;
     justify-content: center;
     align-items: center;

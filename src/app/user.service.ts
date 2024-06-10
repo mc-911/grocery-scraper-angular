@@ -6,9 +6,9 @@ import { Router } from '@angular/router';
 import { AuthService } from './auth.service';
 
 interface LoginResponse {
-  token?: string
-  errors?: string[]
-  isNewUser?: boolean
+  token: string
+  isNewUser: boolean
+  id: string
 }
 interface RegistrationResponse {
 
@@ -35,6 +35,15 @@ export class UserService {
 
   set isNewUser(bool: boolean) {
     localStorage.setItem('isNewUser', bool ? "true" : "false");
+  }
+
+  set userId(id: string) {
+    localStorage.setItem('userId', id);
+  }
+
+  get userId() {
+    const storedUserId = localStorage.getItem('userId')
+    return storedUserId ? storedUserId : ''
   }
 
   loginUser(email: string, password: string) {
@@ -88,5 +97,18 @@ export class UserService {
   public logOut() {
     this.authService.authToken = "";
     this.router.navigate(["/", "login"])
+  }
+
+  handleDeleteUserError(error: HttpErrorResponse) {
+    if (error.status == 401) {
+      return throwError(() => new Error('Unauthorized'))
+    } else {
+      return throwError(() => new Error('Uh-Oh an error has occurred; please try again later.', { cause: "unknown" }))
+    }
+  }
+
+  deleteUser(id: string) {
+    const url = environment.apiUrl + '/user/' + id
+    return this.http.delete<any>(url).pipe(catchError(this.handleDeleteUserError))
   }
 }

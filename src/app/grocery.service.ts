@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { environment } from '../environments/environment';
 import { catchError, throwError } from 'rxjs';
 import { GroceryListItemData, SupermarketEnum } from './grocery-list-item/grocery-list-item.component';
+import { Router } from '@angular/router';
 export type GroceryItemData = {
   name: string,
   price: number,
@@ -13,6 +14,7 @@ export type GroceryItemData = {
   productCode: string
   supermarket: SupermarketEnum
   groceryListItemInfoId?: string
+  quantity?: number
 }
 export interface GrocerySearchResponse {
   paknsave?: GroceryItemData[][]
@@ -42,7 +44,7 @@ export class GroceryService {
 
 
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private router: Router) { }
 
   handleGrocerySearchError(error: HttpErrorResponse) {
     const status = error.status;
@@ -67,6 +69,8 @@ export class GroceryService {
 
   handleCreateGroceryListError(error: HttpErrorResponse) {
     const status = error.status;
+    console.log(error);
+
     switch (status) {
       case 400:
         return throwError(() => new Error("Invalid Request Body"))
@@ -113,9 +117,9 @@ export class GroceryService {
     return this.http.delete<any>(url).pipe(catchError(this.handleGetGroceryListError))
   }
 
-  createGroceryListItemInfo(productCode: string, productUrl: string, name: string, price: number, imageUrl: string, metric: string, info: string, supermarket: string, groceryListItemId: string) {
+  createGroceryListItemInfo(productCode: string, productUrl: string, name: string, price: number, imageUrl: string, metric: string, info: string, supermarket: string, groceryListItemId: string, quantity: number) {
     const url = environment.apiUrl + '/grocery-list-item-info'
-    return this.http.post<CreateGroceryListResponse>(url, { productCode, name, productUrl, price, imageUrl, metric, info, supermarket, groceryListItemId }).pipe(catchError(this.handleCreateGroceryListError))
+    return this.http.post<CreateGroceryListResponse>(url, { productCode, name, productUrl, price, imageUrl, metric, info, supermarket, groceryListItemId, quantity }).pipe(catchError(this.handleCreateGroceryListError))
   }
 
   updateGroceryListItemInfo(productCode: string, productUrl: string, name: string, price: number, imageUrl: string, metric: string, info: string, supermarket: string, groceryListItemId: string, groceryListItemInfoId: string) {
@@ -128,6 +132,13 @@ export class GroceryService {
     return this.http.delete<any>(url).pipe(catchError(this.handleCreateGroceryListError))
   }
 
+  deleteGroceryList(id: string) {
+    const url = environment.apiUrl + '/grocery-list/' + id
+    return this.http.delete<any>(url).pipe(catchError(this.handleCreateGroceryListError))
+  }
+
+
+
 
   /**
    * getGroceryLists
@@ -137,6 +148,11 @@ export class GroceryService {
     return this.http.get<GroceryListInfo[]>(url).pipe(catchError(this.handleCreateGroceryListError))
   }
 
+
+
+  public navigateToList(id: string) {
+    this.router.navigate(["grocerylist", id])
+  }
 
 
   public toggleSupermarket(supermarket: string) {
@@ -158,12 +174,29 @@ export class GroceryService {
     let selectedSupermarkets = []
     if (storedSelectedSupermarkets) {
       try {
-        selectedSupermarkets = JSON.parse(storedSelectedSupermarkets!)
+        selectedSupermarkets = JSON.parse(storedSelectedSupermarkets)
       }
       catch (error) {
         console.log(error);
       }
     }
     return selectedSupermarkets
+  }
+
+  get autoSearch(): boolean {
+    const storedAutoSearch = localStorage.getItem("autoSearch")
+    if (storedAutoSearch) {
+      try {
+        return JSON.parse(storedAutoSearch)
+      }
+      catch (error) {
+        console.log(error);
+      }
+    }
+    return false;
+  }
+
+  set autoSearch(bool: boolean) {
+    localStorage.setItem("autoSearch", JSON.stringify(bool))
   }
 }

@@ -17,11 +17,14 @@ import { UserService } from '../user.service';
 import { LocationService } from '../location.service';
 import { GroceryListDetailComponent } from '../grocery-list-detail/grocery-list-detail.component';
 import { GroceryListSearchComponent, searchStateEnum } from '../grocery-list-search/grocery-list-search.component';
+import { ViewGroceryListsComponent } from '../view-grocery-lists/view-grocery-lists.component';
+import { CreateGroceryListComponent } from '../create-grocery-list/create-grocery-list.component';
+import { SettingsComponent } from '../settings/settings.component';
 
 @Component({
   selector: 'app-grocerylist',
   standalone: true,
-  imports: [CountdownSvgComponent, PacknSaveSvgComponent, NewWorldSvgComponent, NgFor, NgSwitch, NgSwitchCase, NgIf, ReactiveFormsModule, GroceryListItemComponent, NotificationContainerComponent, TotalContainerComponent, GroceryListDetailComponent, GroceryListSearchComponent],
+  imports: [CountdownSvgComponent, PacknSaveSvgComponent, NewWorldSvgComponent, NgFor, NgIf, ReactiveFormsModule, GroceryListItemComponent, NotificationContainerComponent, TotalContainerComponent, GroceryListDetailComponent, GroceryListSearchComponent, ViewGroceryListsComponent, CreateGroceryListComponent, SettingsComponent],
   templateUrl: './grocerylist.component.html',
   styleUrl: './grocerylist.component.css'
 })
@@ -38,12 +41,16 @@ export class GrocerylistComponent {
   @Input() id!: string;
   @ViewChild("setPreferencesDialog") setPreferencesDialog!: ElementRef<HTMLDialogElement>
   @ViewChild("optionsMenuDialog") optionsMenuDialog!: ElementRef<HTMLDialogElement>
+  @ViewChild("createGroceryListModal") createGroceryListModal!: ElementRef<HTMLDialogElement>
+  @ViewChild("viewGroceryListsModal") viewGroceryListsModal!: ElementRef<HTMLDialogElement>
+  @ViewChild("settingsDialog") settingsDialog!: ElementRef<HTMLDialogElement>
 
   constructor(private el: ElementRef, private groceryService: GroceryService, private authService: AuthService, private router: Router, public userService: UserService, private locationService: LocationService, private route: ActivatedRoute) {
   }
 
   ngOnInit() {
-    this.checkAuth()
+    this.authService.checkAuth()
+
     if (!this.locationService.currentLocation) {
       this.locationService.setCurrentLocation()
     }
@@ -52,6 +59,8 @@ export class GrocerylistComponent {
       console.log("No Grocery List Id!");
     } else {
       this.groceryService.getGroceryList(this.id).pipe(catchError(() => {
+        this.authService.authToken = ""
+        this.authService.checkAuth()
         return EMPTY
       })).subscribe((response) => {
         console.log(response);
@@ -77,7 +86,7 @@ export class GrocerylistComponent {
 
     if (this.userService.isNewUser) {
       this.showSetPreferencesDialog = true
-      this.setPreferencesDialog.nativeElement.showModal()
+      // this.setPreferencesDialog.nativeElement.showModal()
       // this.userService.newUser = false
     }
 
@@ -88,11 +97,6 @@ export class GrocerylistComponent {
 
   public get SupermarketEnum() {
     return SupermarketEnum
-  }
-  private checkAuth() {
-    if (!this.authService.authToken) {
-      this.router.navigate(["/", "login"])
-    }
   }
 
 
@@ -120,6 +124,7 @@ export class GrocerylistComponent {
       this.optionsMenuDialog.nativeElement.close()
     }
   }
+
   public addGroceryListItem() {
     if (this.newGroceryListItemName.value) {
       const newName = this.newGroceryListItemName.value
@@ -179,11 +184,8 @@ export class GrocerylistComponent {
     ) {
       this.selectedGroceryListItem = null;
     } else {
-      // this.searchQuery.setValue(this.groceryListItems[index].searchQuery)
       this.selectedGroceryListItem = this.groceryListItems[index]
     }
-
-    console.log(this.selectedGroceryListItem)
   }
 
   public unselectGroceryListItem() {
@@ -201,6 +203,58 @@ export class GrocerylistComponent {
   public toggleSupermarket(event: Event, supermarket: string) {
     this.groceryService.toggleSupermarket(supermarket)
     this.selectedSupermarkets = this.groceryService.selectedSupermarkets
+  }
+
+  public existsGroceryItemData() {
+    let supermarkets = Object.values(SupermarketEnum)
+    for (let i = 0; i < this.groceryListItems.length; i++) {
+      for (let j = 0; j < supermarkets.length; j++) {
+        if (supermarkets[j] in this.groceryListItems[i].supermarketDataDict) {
+
+          return true
+        }
+      }
+    }
+    console.log("Returning false");
+
+    return false;
+  }
+
+  /**
+ * toggleCreateGroceryListModal
+ */
+  public toggleCreateGroceryListModal() {
+    if (!this.createGroceryListModal.nativeElement.open) {
+      this.createGroceryListModal.nativeElement.showModal()
+    } else {
+      this.createGroceryListModal.nativeElement.close()
+    }
+
+  }
+
+  /**
+   * toggleViewGroceryListsModal
+   */
+  public toggleViewGroceryListsModal() {
+    if (!this.viewGroceryListsModal.nativeElement.open) {
+      this.viewGroceryListsModal.nativeElement.showModal()
+    } else {
+      this.viewGroceryListsModal.nativeElement.close()
+    }
+  }
+
+  public toggleSettingsDialog() {
+    if (!this.settingsDialog.nativeElement.open) {
+      this.settingsDialog.nativeElement.showModal()
+    } else {
+      this.settingsDialog.nativeElement.close()
+    }
+  }
+
+  public checkIfGroceryListDeleted(id: string) {
+    if (id == this.id) {
+      this.router.navigate(["/", "home"])
+    }
   }
 
 }

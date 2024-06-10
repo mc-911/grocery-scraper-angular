@@ -1,0 +1,28 @@
+<div class="menuContainer">
+    <div class="menuHeader">
+        <div class="return-btn absolute" (click)="return()">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path d="M21 11H6.414l5.293-5.293-1.414-1.414L2.586 12l7.707 7.707 1.414-1.414L6.414 13H21z">
+                </path>
+            </svg>
+        </div>
+        <div class="menu-header-name">
+            Grocery Lists
+        </div>
+    </div>
+    <div *ngIf="groceryLists.length > 0" class="groceryListsContainer">
+        <div *ngFor="let item of groceryLists; index as i">
+            <div (click)="groceryService.navigateToList(item.id)" class="listName">{{item.name}}</div>
+            <div class="listControls"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <path d="M4 6h2v2H4zm0 5h2v2H4zm0 5h2v2H4zm16-8V6H8.023v2H18.8zM8 11h12v2H8zm0 5h12v2H8z">
+                    </path>
+                </svg><svg (click)="deleteGroceryList(i)" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <path d="M6 7H5v13a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7H6zm10.618-3L15 2H9L7.382 4H3v2h18V4z">
+                    </path>
+                </svg></div>
+        </div>
+    </div>
+    <div *ngIf="groceryLists.length == 0 && !loadingLists" class="noListsMessage">
+        No Lists
+    </div>
+</div>

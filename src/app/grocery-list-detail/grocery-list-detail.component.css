@@ -3,26 +3,135 @@
     display: flex;
     flex-direction: row;
     justify-content: space-around;
+    margin-top: 40px;
 }
 
 .supermarket {
     display: flex;
     flex-direction: column;
+    /* gap: 12px; */
+    gap: 12px;
+    align-items: center;
+}
+
+.groceryListItems {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    gap: 12px;
+}
+
+.supermarketTitleContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 400px;
+    position: relative;
 }
 
 .supermarketTitle {
-    font-size: 1.1rem;
+    font-size: 1.8rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 70px;
 }
 
 .groceryListItem {
     display: flex;
     flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 500px;
+    height: 250px;
+    gap: 8px;
+    border: 2px var(--text-color) solid;
+    padding-top: 10px;
+    border-radius: 10px;
+    overflow-y: hidden;
 }
 
 .groceryListItemName {
+    font-size: 1.4rem;
+    /* height: 60px; */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* height: 60px; */
+}
+
+.groceryDataName,
+.groceryDataInfo,
+.groceryDataPrice,
+.groceryDataQuantity {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     font-size: 1rem;
 }
 
-.groceryListItemSupermarketInfoName {
-    font-size: 1rem;
+.supermarketInfo {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    width: 100%;
+    height: 80%;
+}
+
+.groceryDataImage {
+    height: 180px;
+    width: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.supermarketInfoSubcontainer {
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 4px;
+}
+
+.noItemSelected {
+    height: 80%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.groceryListItemNameContainer {
+    position: relative;
+    width: 100%;
+}
+
+.xMarkContainer {
+    position: absolute;
+    right: 10px;
+    top: 0px;
+    bottom: 0px;
+    margin: auto;
+    width: fit-content;
+    height: 48px;
+    cursor: pointer;
+}
+
+.xMark {
+    fill: var(--text-color);
+    height: 100%;
+}
+
+.clipboard {
+    fill: var(--text-color);
+    height: 48px;
+    position: absolute;
+    right: 0px;
+    top: 4px;
+    bottom: 0px;
+    margin: auto;
+    cursor: pointer;
+    ;
 }

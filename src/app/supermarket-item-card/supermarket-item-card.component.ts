@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { SupermarketEnum } from '../grocery-list-item/grocery-list-item.component';
-import { GroceryItemData, GroceryService } from '../grocery.service';
+import { GroceryItemData } from '../grocery.service';
 import { NgIf } from '@angular/common';
 
 @Component({
@@ -12,7 +12,6 @@ import { NgIf } from '@angular/common';
 })
 export class SupermarketItemCardComponent {
   @Input() data: GroceryItemData = { name: '', price: 0, imageUrl: '', metric: '', info: '', productUrl: '', productCode: '', supermarket: SupermarketEnum.PAKNSAVE }
-  // @Input() selectedGroceryListItem: GroceryListItemData | null = null;
   @Input() selected = false
   @Output() selectedGroceryListItemEvent = new EventEmitter<GroceryItemData>()
 

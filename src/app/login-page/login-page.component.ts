@@ -47,13 +47,10 @@ export class LoginPageComponent {
           this.errorMessage = err.message
           return EMPTY
         })).subscribe(resp => {
-          if (resp.token) {
-            this.authService.authToken = resp.token;
-            if (resp.isNewUser) {
-              this.userService.isNewUser = resp.isNewUser
-            }
-            this.router.navigate(["/", "home"])
-          }
+          this.authService.authToken = resp.token;
+          this.userService.isNewUser = resp.isNewUser
+          this.userService.userId = resp.id
+          this.router.navigate(["/", "home"])
         })
       }
     }

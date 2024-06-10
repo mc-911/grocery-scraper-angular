@@ -1,0 +1,53 @@
+.noListsMessage {
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+}
+
+.groceryListsContainer {
+    flex-grow: 1;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+}
+
+.groceryListsContainer>div {
+    width: 90%;
+    background-color: var(--primary-color);
+    height: 70px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    box-sizing: border-box;
+    padding-left: 8px;
+    padding-right: 8px;
+}
+
+.listControls>* {
+    cursor: pointer;
+    height: 30px;
+    gap: 8px;
+}
+
+.listControls>*:hover {
+    filter: brightness(50%);
+}
+
+.listName {
+    flex-grow: 1;
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    cursor: pointer;
+    /* justify-content: center; */
+}
+
+.listName:hover {
+    filter: brightness(50%);
+}

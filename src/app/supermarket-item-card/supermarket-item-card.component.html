@@ -17,12 +17,12 @@
             {{cents + '0'.repeat(2 - cents.toString(10).length)}}
         </div>
     </div>
-    <div class="supermarket-card-quantity ">
+    <!-- <div class="supermarket-card-quantity ">
         <input class="supermarket-card-quantity-input" type="number" />
         <div class="supermarket-card-metric">
             {{data.metric}}
         </div>
-    </div>
+    </div> -->
 </div>
 <div class="supermarket-card-select-btn" [class]="selected ? 'selected' : ''" (click)="selectItem()">
     <!-- {{isSelected() ? 'UNSELECT' : 'SELECT'}} -->

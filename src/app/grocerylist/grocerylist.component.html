@@ -17,17 +17,18 @@
     </div>
     <app-grocery-list-search class="search-container"
         [style]="mobile && selectedGroceryListItem ? 'display: flex;' : ''"
-        *ngIf="selectedGroceryListItem != null; else noSelectedGroceryListItem"
+        *ngIf="selectedGroceryListItem != null; else noSelectedGroceryListSection"
         [selectedGroceryListItem]="selectedGroceryListItem" [total]="getFormattedMinTotal()"
         (returnBtnClickEvent)="unselectGroceryListItem()" (addNotificationEvent)="addNotification($event)"
         [mobile]="mobile" />
-    <ng-template #noSelectedGroceryListItem>
-        <div class="noSelectedGroceryListItem">
+    <ng-template #noSelectedGroceryListSection>
+        <div *ngIf="!existsGroceryItemData(); else groceryListDetail" class="noSelectedGroceryListItem">
             Add or Select a Grocery Item to start searching
         </div>
-    </ng-template>
-    <ng-template #groceryListDetail>
-        <app-grocery-list-detail [groceryListItems]="groceryListItems" />
+        <ng-template #groceryListDetail>
+            <app-grocery-list-detail (removeItemEvent)="removeGroceryListItem($event)"
+                [groceryListItems]="groceryListItems" />
+        </ng-template>
     </ng-template>
     <dialog id="addGroceryListItemModal">
         <div class="menuContainer">
@@ -59,7 +60,7 @@
         </div>
     </dialog>
 
-    <dialog id="settingsDialog">
+    <!-- <dialog id="settingsDialog">
         <div class="menuContainer">
             <div class="menuHeader">
                 <div class="return-btn absolute" (click)="toggleSettingsModal()">
@@ -90,7 +91,8 @@
                 Log out
             </div>
         </div>
-    </dialog>
+    </dialog> -->
+
     <dialog #setPreferencesDialog>
         <div class="menuContainer">
             <div class="menuHeader">
@@ -134,7 +136,7 @@
                 </div>
             </div>
             <div class="optionsMenuItems">
-                <div class="optionsMenuItem">
+                <div (click)="toggleViewGroceryListsModal()" class="optionsMenuItem">
                     <div class="iconContainer">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                             <path
@@ -143,10 +145,10 @@
                         </svg>
                     </div>
                     <div class="label">
-                        Load List
+                        View Lists
                     </div>
                 </div>
-                <div class="optionsMenuItem">
+                <div (click)="toggleCreateGroceryListModal()" class="optionsMenuItem">
                     <div class="iconContainer">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                             <path d="M19 15v-3h-2v3h-3v2h3v3h2v-3h3v-2h-.937zM4 7h11v2H4zm0 4h11v2H4zm0 4h8v2H4z">
@@ -155,7 +157,7 @@
                     </div>
                     <div class="label">New List</div>
                 </div>
-                <div class="optionsMenuItem">
+                <div (click)="toggleSettingsDialog()" class="optionsMenuItem">
                     <div class="iconContainer">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                             <path
@@ -170,6 +172,16 @@
                 Log out
             </div>
         </div>
+    </dialog>
+    <dialog #createGroceryListModal>
+        <app-create-grocery-list (returnBtnClickEvent)="toggleCreateGroceryListModal()" />
+    </dialog>
+    <dialog #viewGroceryListsModal>
+        <app-view-grocery-lists (groceryListDeletedEvent)="checkIfGroceryListDeleted($event)"
+            (returnBtnClickEvent)="toggleViewGroceryListsModal()" />
+    </dialog>
+    <dialog #settingsDialog>
+        <app-settings (returnBtnClickEvent)="toggleSettingsDialog()" />
     </dialog>
     <app-notification-container [messages]="notifications"></app-notification-container>
 

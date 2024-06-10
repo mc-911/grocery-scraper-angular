@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { GroceryListItemData, SupermarketEnum } from '../grocery-list-item/grocery-list-item.component';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { GroceryItemData, GroceryService } from '../grocery.service';
@@ -8,9 +8,10 @@ import { PacknSaveSvgComponent } from '../packn-save-svg/packn-save-svg.componen
 import { NewWorldSvgComponent } from '../new-world-svg/new-world-svg.component';
 import { CountdownSvgComponent } from '../countdown-svg/countdown-svg.component';
 import { DropdownComponent } from '../dropdown/dropdown.component';
-import { NgIf, NgSwitch, NgSwitchCase } from '@angular/common';
+import { NgFor, NgIf, NgSwitch, NgSwitchCase } from '@angular/common';
 import { SupermarketItemCardComponent } from '../supermarket-item-card/supermarket-item-card.component';
 import { TotalContainerComponent } from '../total-container/total-container.component';
+import { AuthService } from '../auth.service';
 
 export enum searchStateEnum {
   NO_SEARCH,
@@ -21,7 +22,7 @@ export enum searchStateEnum {
 @Component({
   selector: 'app-grocery-list-search',
   standalone: true,
-  imports: [ReactiveFormsModule, PacknSaveSvgComponent, NewWorldSvgComponent, CountdownSvgComponent, DropdownComponent, NgSwitch, SupermarketItemCardComponent, NgIf, NgSwitchCase, TotalContainerComponent],
+  imports: [ReactiveFormsModule, PacknSaveSvgComponent, NewWorldSvgComponent, CountdownSvgComponent, DropdownComponent, NgSwitch, SupermarketItemCardComponent, NgIf, NgSwitchCase, TotalContainerComponent, NgFor],
   templateUrl: './grocery-list-search.component.html',
   styleUrl: './grocery-list-search.component.css'
 })
@@ -35,12 +36,17 @@ export class GroceryListSearchComponent {
   selectedSort = ''
   selectedSupermarkets = this.groceryService.selectedSupermarkets
   searchQuery = new FormControl('');
-
+  newGroceryListItemInfo: GroceryItemData | null = null
+  newGroceryListItemInfoQuantity = new FormControl(1);
   @Output() addNotificationEvent = new EventEmitter<string[]>();
   @Output() returnBtnClickEvent = new EventEmitter<boolean>();
 
-  constructor(private groceryService: GroceryService, private locationService: LocationService) { }
+  @ViewChild("setQuantityDialog") setQuantityDialog!: ElementRef<HTMLDialogElement>
+  constructor(private groceryService: GroceryService, private locationService: LocationService, private authService: AuthService) { }
   ngOnInit() {
+  }
+
+  ngOnChanges() {
     this.selectedCategory = this.categories[0].value
     this.selectedSort = this.sortingOptions[0].value
     this.selectedSupermarkets = this.groceryService.selectedSupermarkets
@@ -74,8 +80,8 @@ export class GroceryListSearchComponent {
       this.selectedGroceryListItem.searchState = searchStateEnum.LOADING;
       this.groceryService.grocerySearchv2(searchQuery, this.selectedSupermarkets, this.selectedSort, this.selectedCategory, currentLocation!.latitude, currentLocation!.longitude).pipe(catchError(() => {
         console.log("Handle this error")
-        // this.authService.authToken = ""
-        // this.checkAuth()
+        this.authService.authToken = ""
+        this.authService.checkAuth()
         return EMPTY;
       })).subscribe((resp) => {
         if (this.selectedGroceryListItem) {
@@ -146,19 +152,36 @@ export class GroceryListSearchComponent {
           console.log("No Grocery List Item Info Id");
         }
       } else {
-        this.selectedGroceryListItem.supermarketDataDict[data.supermarket] = data
-        const newData = this.selectedGroceryListItem.supermarketDataDict[data.supermarket]
-        this.groceryService.createGroceryListItemInfo(data.productCode, data.productUrl, data.name, data.price, data.imageUrl, data.metric, data.info, data.supermarket, this.selectedGroceryListItem.groceryListItemId).pipe(catchError(() => {
-          console.log("Grocery List Item Info Creation Failed");
-          return EMPTY
-        })).subscribe((response) => {
-          console.log("Grocery List Item Info Created")
-          newData.groceryListItemInfoId = response.id
-        }
-        )
+        this.newGroceryListItemInfo = data
+        this.toggleSetQuantityDialog()
       }
     } else {
       console.log("No Grocery List Item selected!");
     }
+  }
+  public addNewGroceryListItemInfo() {
+    if (this.newGroceryListItemInfo && this.newGroceryListItemInfoQuantity.value) {
+      const data = this.newGroceryListItemInfo
+      this.selectedGroceryListItem.supermarketDataDict[data.supermarket] = data
+      const newData = this.selectedGroceryListItem.supermarketDataDict[data.supermarket]
+      this.groceryService.createGroceryListItemInfo(data.productCode, data.productUrl, data.name, data.price, data.imageUrl, data.metric, data.info, data.supermarket, this.selectedGroceryListItem.groceryListItemId, this.newGroceryListItemInfoQuantity.value).pipe(catchError(() => {
+        console.log("Grocery List Item Info Creation Failed");
+        return EMPTY
+      })).subscribe((response) => {
+        console.log("Grocery List Item Info Created")
+        newData.groceryListItemInfoId = response.id
+        this.newGroceryListItemInfoQuantity.setValue(1)
+        this.setQuantityDialog.nativeElement.close()
+      }
+      )
+    }
+  }
+  public toggleSetQuantityDialog() {
+    if (!this.setQuantityDialog.nativeElement.open) {
+      this.setQuantityDialog.nativeElement.showModal()
+    } else {
+      this.setQuantityDialog.nativeElement.close()
+    }
+    this.newGroceryListItemInfoQuantity.setValue(1)
   }
 }
