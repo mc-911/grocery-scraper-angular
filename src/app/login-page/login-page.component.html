@@ -34,7 +34,7 @@
     <form class="form" [formGroup]="loginForm" (ngSubmit)="Login()">
 
         <div class="input-container">
-            <input type="text" placeholder="Email Address" id="email" formControlName="email">
+            <input type="text" placeholder="Email Address" autocomplete="email" id="email" formControlName="email">
             <div class="input-error" *ngIf=" email?.dirty && email?.errors?.['required']">Please enter Email
                 Address
             </div>
@@ -42,7 +42,8 @@
             </div>
         </div>
         <div class="input-container">
-            <input type="password" placeholder="Password" id="password" formControlName="password">
+            <input type="password" autocomplete="current-password" placeholder="Password" id="password"
+                formControlName="password">
             <div class="input-error" *ngIf="password?.dirty && password?.invalid">Please enter Password</div>
             <div class="input-error" *ngIf="errorMessage">{{errorMessage}}</div>
             <div class="verified-email-msg" *ngIf="verifiedEmail">Email Verified. You may now log into your account

@@ -24,7 +24,6 @@ export class LoginPageComponent {
 
   ngOnInit() {
     const verificationToken = this.route.snapshot.queryParamMap.get('verificationToken');
-    console.log(verificationToken, 1)
     if (verificationToken) {
       this.userService.verifyUser(verificationToken).pipe(catchError(err => {
         this.errorMessage = err.message
