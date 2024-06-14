@@ -34,13 +34,23 @@ export class RegistrationPageComponent {
   registrationFormSubmitted = false;
   emailSent = false;
   constructor(private userService: UserService) { }
+
+  ngOnInit() {
+    this.registrationForm.get('email')?.statusChanges.subscribe(() => {
+      console.log("Status Changed");
+      const emailInput = this.registrationForm.get('email')
+      if (emailInput && emailInput.value) {
+        emailInput?.setValue(emailInput.value?.trim(), { emitEvent: false })
+      }
+    })
+  }
   /**
    * register
    */
   public register() {
     console.log(this.email?.touched)
     this.registrationFormSubmitted = true;
-    this.userService.registerUser(this.email?.value, this.firstName?.value, this.lastName?.value, this.password?.value).pipe(catchError((err) => {
+    this.userService.registerUser(this.email?.value.trim(), this.firstName?.value.trim(), this.lastName?.value.trim(), this.password?.value.trim()).pipe(catchError((err) => {
       console.log(err.cause)
       if (err.cause === "email") {
         this.emailInUse = true

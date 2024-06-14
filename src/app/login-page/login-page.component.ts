@@ -39,8 +39,8 @@ export class LoginPageComponent {
    */
   public Login() {
     if (this.loginForm.valid) {
-      const email = this.email?.value;
-      const password = this.password?.value;
+      const email = this.email?.value?.trim();
+      const password = this.password?.value?.trim();
       if (email && password) {
         this.userService.loginUser(email, password).pipe(catchError(err => {
           this.errorMessage = err.message
