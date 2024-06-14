@@ -12,11 +12,17 @@
 }
 
 .total-price {
-    font-size: xx-large;
+    font-size: 1.5rem;
 }
 
 .cog {
     height: 50px;
     cursor: pointer;
     fill: var(--text-color)
+}
+
+.controls {
+    display: flex;
+    flex-direction: row;
+    gap: 4px;
 }

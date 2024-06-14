@@ -9,12 +9,16 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 })
 export class TotalContainerComponent {
   @Input() total = '';
-  @Output() cogOnClickEvent = new EventEmitter<number>();
+  @Output() menuBtnClickEvent = new EventEmitter();
+  @Output() detailBtnClickEvent = new EventEmitter();
 
   /**
    * emitOnClickEvent
    */
-  public emitOnClickEvent() {
-    this.cogOnClickEvent.emit(1)
+  public emitMenuBtnClickEvent() {
+    this.menuBtnClickEvent.emit()
+  }
+  public emitdetailBtnClickEvent() {
+    this.detailBtnClickEvent.emit()
   }
 }

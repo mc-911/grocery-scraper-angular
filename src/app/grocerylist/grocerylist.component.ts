@@ -1,4 +1,4 @@
-import { Component, ElementRef, Input, ViewChild } from '@angular/core';
+import { Component, ElementRef, Input, ViewChild, HostListener } from '@angular/core';
 import { CountdownSvgComponent } from '../countdown-svg/countdown-svg.component'
 import { PacknSaveSvgComponent } from '../packn-save-svg/packn-save-svg.component';
 import { SupermarketItemCardComponent } from '../supermarket-item-card/supermarket-item-card.component';
@@ -38,6 +38,7 @@ export class GrocerylistComponent {
   showSetPreferencesDialog = false;
   name = "Grocery List"
   selectedSupermarkets = this.groceryService.selectedSupermarkets
+  showDetail = false
   @Input() id!: string;
   @ViewChild("setPreferencesDialog") setPreferencesDialog!: ElementRef<HTMLDialogElement>
   @ViewChild("optionsMenuDialog") optionsMenuDialog!: ElementRef<HTMLDialogElement>
@@ -93,6 +94,11 @@ export class GrocerylistComponent {
     this.locationService.setCurrentLocation()
 
     console.log(this.setPreferencesDialog);
+  }
+
+  @HostListener('window:resize', ['$event'])
+  onWindowResize() {
+    this.mobile = window.innerWidth <= 480;
   }
 
   public get SupermarketEnum() {
@@ -170,6 +176,9 @@ export class GrocerylistComponent {
   }
 
   public removeGroceryListItem(index: number) {
+    if (this.selectedGroceryListItem == this.groceryListItems[index]) {
+      this.selectedGroceryListItem = null
+    }
     this.groceryService.deleteGroceryListItem(this.groceryListItems[index].groceryListItemId).pipe(catchError(() => {
       console.log("Grocery List Item delete failed");
       return EMPTY
@@ -255,6 +264,10 @@ export class GrocerylistComponent {
     if (id == this.id) {
       this.router.navigate(["/", "home"])
     }
+  }
+
+  public toggleShowDetail() {
+    this.showDetail = !this.showDetail
   }
 
 }

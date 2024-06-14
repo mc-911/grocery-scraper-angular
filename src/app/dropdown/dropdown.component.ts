@@ -14,8 +14,8 @@ type dropdownItem = {
 })
 export class DropdownComponent {
   @Input() options: dropdownItem[] = []
-  @Output() selectOptionEvent = new EventEmitter<string>();
-  selectedOption = 0;
+  @Output() selectOptionEvent = new EventEmitter<number>();
+  @Input() selectedOption = 0;
   optionsVisible = false;
   callback = (event: Event) => {
     const element = (event.target as HTMLElement);
@@ -29,7 +29,7 @@ export class DropdownComponent {
   constructor(private el: ElementRef) { }
   public selectOption(index: number) {
     this.selectedOption = index;
-    this.selectOptionEvent.emit(this.options[this.selectedOption].value)
+    this.selectOptionEvent.emit(index)
     this.toggleDropdown()
     window.removeEventListener("click", this.callback)
   }

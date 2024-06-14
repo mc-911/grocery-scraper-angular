@@ -28,8 +28,6 @@ export enum searchStateEnum {
 })
 export class GroceryListSearchComponent {
   @Input({ required: true }) selectedGroceryListItem!: GroceryListItemData;
-  @Input({ required: true }) total!: string
-  @Input({ required: true }) mobile!: boolean;
   categories = [{ name: 'General', value: 'GENERAL' }, { name: 'Beef', value: 'BEEF' }, { name: 'Lamb', value: 'LAMB' }, { name: 'Pork', value: 'PORK' }, { name: 'Chicken', value: 'CHICKEN' }, { name: 'Vegetable', value: 'VEGETABLE' }, { name: 'Fruit', value: 'FRUIT' }, { name: 'Eggs', value: 'EGGS' }]
   sortingOptions = [{ name: "Popularity", value: "POPULARITY" }, { name: 'Price - Low to High', value: 'ASC' }, { name: 'Price - High to Low', value: 'DESC' }]
   selectedCategory = ''
@@ -44,6 +42,9 @@ export class GroceryListSearchComponent {
   @ViewChild("setQuantityDialog") setQuantityDialog!: ElementRef<HTMLDialogElement>
   constructor(private groceryService: GroceryService, private locationService: LocationService, private authService: AuthService) { }
   ngOnInit() {
+    if (this.selectedGroceryListItem.searchState == searchStateEnum.NO_SEARCH && this.groceryService.autoSearch) {
+      this.search()
+    }
   }
 
   ngOnChanges() {
@@ -103,12 +104,12 @@ export class GroceryListSearchComponent {
     this.selectedSupermarkets = this.groceryService.selectedSupermarkets
   }
 
-  public selectCategory(value: string) {
-    this.selectedCategory = value
+  public selectCategory(index: number) {
+    this.selectedCategory = this.categories[index].value
   }
 
-  public selectSort(value: string) {
-    this.selectedSort = value;
+  public selectSort(index: number) {
+    this.selectedSort = this.sortingOptions[index].value
   }
   public isSelectedGroceryListInfo(productCode: string, supermarket: SupermarketEnum) {
     if (this.selectedGroceryListItem) {

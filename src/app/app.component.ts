@@ -10,5 +10,5 @@ import { CountdownSvgComponent } from './countdown-svg/countdown-svg.component';
   styleUrl: './app.component.css'
 })
 export class AppComponent {
-  title = 'grocery-scraper';
+  title = 'Grocery List Plus';
 }

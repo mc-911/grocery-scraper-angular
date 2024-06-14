@@ -1,13 +1,17 @@
 :host {
     display: flex;
     flex-direction: column;
+    padding-top: 200px;
+    gap: 50px;
+    height: 100vh;
+    box-sizing: border-box;
 }
 
 .welcomeMessage {
-    height: 400px;
     display: flex;
     flex-direction: row;
     align-items: center;
+    flex-wrap: wrap;
     font-size: 3rem;
     /* margin-left: 12px; */
     justify-content: center;
@@ -25,4 +29,14 @@
 
 .optionsMenuItems {
     justify-content: center;
+}
+
+
+
+
+@media (max-width: 480px) {
+    :host {
+        padding-top: 20px;
+        gap: 25px;
+    }
 }

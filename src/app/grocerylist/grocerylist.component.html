@@ -1,5 +1,5 @@
 <div class="grocerylist-container">
-    <div class="grocerylist" [style]="mobile && selectedGroceryListItem ? 'display: none;' : ''">
+    <div class="grocerylist" [style]="mobile && selectedGroceryListItem || showDetail ? 'display: none;' : ''">
         <div class="grocerylist-title">{{name}}</div>
         <div class="grocerylist-items-container">
             <app-grocery-list-item *ngFor="let item of groceryListItems; index as i" [data]="item"
@@ -13,23 +13,31 @@
                     stroke-linejoin="round"></path>
             </svg>
         </div>
-        <app-total-container [total]="getFormattedMinTotal()" (cogOnClickEvent)="toggleOptionsModal()" />
+        <app-total-container [total]="getFormattedMinTotal()" (detailBtnClickEvent)="toggleShowDetail()"
+            (menuBtnClickEvent)="toggleOptionsModal()" />
     </div>
-    <app-grocery-list-search class="search-container"
-        [style]="mobile && selectedGroceryListItem ? 'display: flex;' : ''"
-        *ngIf="selectedGroceryListItem != null; else noSelectedGroceryListSection"
-        [selectedGroceryListItem]="selectedGroceryListItem" [total]="getFormattedMinTotal()"
-        (returnBtnClickEvent)="unselectGroceryListItem()" (addNotificationEvent)="addNotification($event)"
-        [mobile]="mobile" />
-    <ng-template #noSelectedGroceryListSection>
-        <div *ngIf="!existsGroceryItemData(); else groceryListDetail" class="noSelectedGroceryListItem">
-            Add or Select a Grocery Item to start searching
+    <div *ngIf="showDetail; else searchSection" class="viewWithTotalContainer">
+        <app-grocery-list-detail (removeItemEvent)="removeGroceryListItem($event)"
+            [groceryListItems]="groceryListItems" />
+        <app-total-container [total]="getFormattedMinTotal()" (detailBtnClickEvent)="toggleShowDetail()"
+            (menuBtnClickEvent)="toggleOptionsModal()" />
+    </div>
+    <ng-template #searchSection>
+        <div class="viewWithTotalContainer" *ngIf="selectedGroceryListItem != null; else noSelectedGroceryListSection">
+            <app-grocery-list-search class="search-container"
+                [style]="mobile && selectedGroceryListItem ? 'display: flex;' : ''"
+                [selectedGroceryListItem]="selectedGroceryListItem" (returnBtnClickEvent)="unselectGroceryListItem()"
+                (addNotificationEvent)="addNotification($event)" />
+            <app-total-container *ngIf="mobile" [total]="getFormattedMinTotal()"
+                (detailBtnClickEvent)="toggleShowDetail()" (menuBtnClickEvent)="toggleOptionsModal()" />
         </div>
-        <ng-template #groceryListDetail>
-            <app-grocery-list-detail (removeItemEvent)="removeGroceryListItem($event)"
-                [groceryListItems]="groceryListItems" />
+        <ng-template #noSelectedGroceryListSection>
+            <div class="noSelectedGroceryListItem">
+                Add or Select a Grocery Item to start searching
+            </div>
         </ng-template>
     </ng-template>
+
     <dialog id="addGroceryListItemModal">
         <div class="menuContainer">
             <div class="menuHeader">
@@ -123,7 +131,7 @@
         </div>
     </dialog>
     <dialog #optionsMenuDialog>
-        <div class="optionsMenu">
+        <div class="menuContainer">
             <div class="menuHeader">
                 <div class="return-btn absolute" (click)="toggleOptionsModal()">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">

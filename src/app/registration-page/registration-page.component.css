@@ -13,14 +13,20 @@
 }
 
 .logo-container {
-    margin-top: 20vh;
     cursor: pointer;
+}
+
+.content-container {
+    padding-top: 5vh;
 }
 
 .column-container {
     display: flex;
     flex-direction: row;
     gap: 12px;
+    max-width: 100%;
+    flex-wrap: wrap;
+    justify-content: center;
 }
 
 

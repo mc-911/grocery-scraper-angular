@@ -1,7 +1,17 @@
-<div class="supermarket">
+<div *ngIf="this.groceryListItems.length; else emptyGroceryList" class="supermarket" #supermarketContainer>
+    <app-dropdown (selectOptionEvent)="selectSupermarket($event)" [selectedOption]="selectedItemIndex"
+        [options]="supermarketDropdownItems" />
     <div class="supermarketTitleContainer">
-        <div class="supermarketTitle">
-            Pak'nSave
+        <div [ngSwitch]="selectedSupermarket" class="supermarketTitle">
+            <div *ngSwitchCase="SupermarketEnum.PAKNSAVE">
+                Pak'nSave
+            </div>
+            <div *ngSwitchCase="SupermarketEnum.COUNTDOWN">
+                Countdown
+            </div>
+            <div *ngSwitchCase="SupermarketEnum.NEW_WORLD">
+                New World
+            </div>
         </div>
         <svg class="clipboard" (click)="copyMinGroceryList()" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
             <path
@@ -21,27 +31,33 @@
                     </svg></div>
             </div>
             <div class="noItemSelected"
-                *ngIf="!item.supermarketDataDict.hasOwnProperty(SupermarketEnum.PAKNSAVE); else supermarketItemInfo">
-                No Item selected for Pak N Save
+                *ngIf="!item.supermarketDataDict.hasOwnProperty(selectedSupermarket); else supermarketItemInfo">
+                No Item selected
             </div>
             <ng-template #supermarketItemInfo>
                 <div class="supermarketInfo">
                     <div class="groceryDataImage">
-                        <img [class]="getImageClass(SupermarketEnum.PAKNSAVE)"
-                            [src]="item.supermarketDataDict[SupermarketEnum.PAKNSAVE].imageUrl" />
+                        <img [class]="getImageClass(selectedSupermarket)"
+                            [src]="item.supermarketDataDict[selectedSupermarket].imageUrl" />
                     </div>
                     <div class="supermarketInfoSubcontainer">
                         <div class="groceryDataName">
-                            {{item.supermarketDataDict[SupermarketEnum.PAKNSAVE].name}}</div>
+                            {{item.supermarketDataDict[selectedSupermarket].name}}</div>
                         <div class="groceryDataInfo">
-                            {{item.supermarketDataDict[SupermarketEnum.PAKNSAVE].info}}</div>
+                            {{item.supermarketDataDict[selectedSupermarket].info}}</div>
                         <div class="groceryDataPrice">
-                            {{item.supermarketDataDict[SupermarketEnum.PAKNSAVE].price}}</div>
+                            {{item.supermarketDataDict[selectedSupermarket].price}}</div>
                         <div class="groceryDataQuantity">
-                            {{item.supermarketDataDict[SupermarketEnum.PAKNSAVE].quantity}}</div>
+                            {{item.supermarketDataDict[selectedSupermarket].quantity}}</div>
                     </div>
                 </div>
             </ng-template>
         </div>
     </div>
 </div>
+<ng-template #emptyGroceryList>
+    <div>
+        Add some grocery list items!
+
+    </div>
+</ng-template>

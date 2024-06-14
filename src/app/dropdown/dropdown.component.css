@@ -22,6 +22,7 @@
     border: 1px solid var(--primary-color);
     /* background-color: var(--secondary-color); */
     background-color: inherit;
+    z-index: 1;
 }
 
 .dropdown-options>* {
