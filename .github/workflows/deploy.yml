@@ -1,9 +1,11 @@
 name: Angular Build Deploy
 on:
   push:
-    branches: [ "production" ]
+    branches:
+      - production
   pull_request:
-    branches: [ "production" ]
+    branches:
+      - production
 
 jobs:
   build_deploy:
