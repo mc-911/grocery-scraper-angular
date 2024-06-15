@@ -4,8 +4,6 @@ on:
     branches: [ "master" ]
   pull_request:
     branches: [ "master" ]
-env:
-  project_id : ${{ vars.PROJECT_ID }}
 
 jobs:
   build_deploy:
@@ -22,6 +20,7 @@ jobs:
     - id: 'auth'
       uses: 'google-github-actions/auth@v2'
       with:
+        project_id : ${{ vars.PROJECT_ID }}
         workload_identity_provider: 'https://iam.googleapis.com/projects/740948484269/locations/global/workloadIdentityPools/github-actions-cloud-run/providers/github'
         # service_account: 'cloudrun-cicd@grocery-list-plus.iam.gserviceaccount.com'
     - id: 'deploy'
