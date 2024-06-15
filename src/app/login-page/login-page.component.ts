@@ -46,6 +46,7 @@ export class LoginPageComponent {
         emailInput?.setValue(emailInput.value?.trim(), { emitEvent: false })
       }
     })
+    console.log("Welcome to Grocery List Plus");
   }
 
   /**
