@@ -17,6 +17,8 @@ jobs:
     - uses: actions/setup-node@v4
     - run: npm i -g @angular/cli
     - run: npm install -g
+    - run: npm list
+    - run: ls
     - run: ng build --configuration=production 
     - id: 'auth'
       uses: 'google-github-actions/auth@v2'
