@@ -22,7 +22,7 @@ jobs:
       with:
         project_id : ${{ vars.PROJECT_ID }}
         workload_identity_provider: 'projects/740948484269/locations/global/workloadIdentityPools/github-actions-cloud-run/providers/github'
-        # service_account: 'cloudrun-cicd@grocery-list-plus.iam.gserviceaccount.com'
+        service_account: 'cloudrun-cicd@grocery-list-plus.iam.gserviceaccount.com'
     - id: 'deploy'
       uses: 'google-github-actions/deploy-appengine@v2'
       with:
