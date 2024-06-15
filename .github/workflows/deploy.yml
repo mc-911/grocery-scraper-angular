@@ -4,6 +4,8 @@ on:
     branches: [ "master" ]
   pull_request:
     branches: [ "master" ]
+env:
+  project_id : ${{ vars.PROJECT_ID }}
 
 jobs:
   build_deploy:
