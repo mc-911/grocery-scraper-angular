@@ -1,0 +1,40 @@
+runtime: python312
+
+handlers:
+- url: /(.+\.js)
+  static_files: app/browser/\1
+  upload: app/browser/(.+\.js)
+
+- url: /(.+\.css)
+  static_files: app/browser/\1
+  upload: app/browser/(.+\.css)
+
+- url: /(.+\.png)
+  static_files: app/browser/\1
+  upload: app/browser/(.+\.png)
+
+- url: /(.+\.jpg)
+  static_files: app/browser/\1
+  upload: app/browser/(.+\.jpg)
+
+- url: /(.+\.svg)
+  static_files: app/browser/\1
+  upload: app/browser/(.+\.svg)
+
+- url: /favicon.ico
+  static_files: app/browser/favicon.ico
+  upload: app/browser/favicon.ico
+
+- url: /(.+\.json)
+  static_files: app/browser/\1
+  upload: app/browser/(.+\.json)
+
+- url: /(.+)
+  static_files: app/browser/index.html
+  upload: app/browser/index.html
+
+- url: /
+  static_files: app/browser/index.html
+  upload: app/browser/index.html
+
+  

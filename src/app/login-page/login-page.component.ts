@@ -32,6 +32,20 @@ export class LoginPageComponent {
         this.verifiedEmail = true
       })
     }
+    this.loginForm.get('password')?.statusChanges.subscribe(() => {
+      console.log("Status Changed");
+      const passwordInput = this.loginForm.get('password')
+      if (passwordInput && passwordInput.value) {
+        passwordInput?.setValue(passwordInput.value?.trim(), { emitEvent: false })
+      }
+    })
+    this.loginForm.get('email')?.statusChanges.subscribe(() => {
+      console.log("Status Changed");
+      const emailInput = this.loginForm.get('email')
+      if (emailInput && emailInput.value) {
+        emailInput?.setValue(emailInput.value?.trim(), { emitEvent: false })
+      }
+    })
   }
 
   /**

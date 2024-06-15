@@ -1,0 +1,15 @@
+/node_modules/
+/src/
+/angular/
+.editorconfig
+.gitignore
+# Visual Studio Code
+.vscode/*
+.history/*
+angular.json
+package.lock.json
+package.json
+README.md
+tsconfig.app.json
+tsconfig.json
+tsconfig.spec.json
