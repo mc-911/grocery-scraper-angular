@@ -79,7 +79,7 @@ export class GroceryListSearchComponent {
     if (errors.length == 0 && this.selectedGroceryListItem && searchQuery) {
       this.selectedGroceryListItem.searchQuery = searchQuery;
       this.selectedGroceryListItem.searchState = searchStateEnum.LOADING;
-      this.groceryService.grocerySearchv2(searchQuery, this.selectedSupermarkets, this.selectedSort, this.selectedCategory, currentLocation!.latitude, currentLocation!.longitude).pipe(catchError(() => {
+      this.groceryService.grocerySearch(searchQuery, this.selectedSupermarkets, this.selectedSort, this.selectedCategory, currentLocation!.latitude, currentLocation!.longitude).pipe(catchError(() => {
         console.log("Handle this error")
         this.authService.authToken = ""
         this.authService.checkAuth()

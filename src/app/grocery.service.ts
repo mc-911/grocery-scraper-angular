@@ -62,10 +62,6 @@ export class GroceryService {
     const url = environment.apiUrl + `/grocery-search?query=${query}&supermarkets=${selectedSupermarkets}&order=${order}&category=${category}&longitude=${longitude}&latitude=${latitude}`
     return this.http.get<GrocerySearchResponse>(url).pipe(catchError(this.handleGrocerySearchError))
   }
-  grocerySearchv2(query: string, selectedSupermarkets: string[], order: string, category: string, latitude: number, longitude: number) {
-    const url = environment.apiUrl + `/grocery-search-v2?query=${query}&supermarkets=${selectedSupermarkets}&order=${order}&category=${category}&longitude=${longitude}&latitude=${latitude}`
-    return this.http.get<GrocerySearchResponse>(url).pipe(catchError(this.handleGrocerySearchError))
-  }
 
   handleCreateGroceryListError(error: HttpErrorResponse) {
     const status = error.status;
