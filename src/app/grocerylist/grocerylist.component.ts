@@ -20,7 +20,7 @@ import { GroceryListSearchComponent, searchStateEnum } from '../grocery-list-sea
 import { ViewGroceryListsComponent } from '../view-grocery-lists/view-grocery-lists.component';
 import { CreateGroceryListComponent } from '../create-grocery-list/create-grocery-list.component';
 import { SettingsComponent } from '../settings/settings.component';
-
+import { environment } from '../../environments/environment';
 @Component({
   selector: 'app-grocerylist',
   standalone: true,
@@ -47,6 +47,10 @@ export class GrocerylistComponent {
   @ViewChild("settingsDialog") settingsDialog!: ElementRef<HTMLDialogElement>
 
   constructor(private el: ElementRef, private groceryService: GroceryService, private authService: AuthService, private router: Router, public userService: UserService, private locationService: LocationService, private route: ActivatedRoute) {
+  }
+
+  get showCountdown() {
+    return environment.showCountdown
   }
 
   ngOnInit() {

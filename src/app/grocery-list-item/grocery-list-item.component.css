@@ -13,9 +13,6 @@
     flex-direction: row;
     width: 98%;
     border: 2px solid var(--border-color);
-    /* border-radius: 10px; */
-    /* border-top-right-radius: 0px;
-    border-bottom-right-radius: 0px; */
     flex-shrink: 0;
     overflow: hidden;
     min-height: 36px;

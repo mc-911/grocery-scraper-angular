@@ -1,10 +1,8 @@
-/**Card**/
 :host {
     display: flex;
     flex-direction: column;
     width: 350px;
     height: 300px;
-    /* border: 1px solid black; */
     border-radius: 10px;
     align-items: center;
     overflow: hidden;
@@ -44,9 +42,7 @@
 .supermarket-card-price {
     display: flex;
     flex-direction: row;
-    /* width: 50%; */
     width: 100%;
-    /* padding-left: 8px; */
     box-sizing: border-box;
     justify-content: center;
     align-items: center;
@@ -65,14 +61,9 @@
 .supermarket-card-info {
     height: 15%;
     width: 100%;
-    /* border-top: 1px solid black; */
     display: flex;
     flex-direction: row;
     overflow: hidden;
-}
-
-.supermarket-card-info>*:not(:first-child) {
-    /* border-left: 1px solid black; */
 }
 
 .supermarket-card-price-cent {
@@ -103,10 +94,8 @@
     justify-content: center;
     align-items: center;
     position: relative;
-    /* padding-left: 8px; */
     box-sizing: border-box;
     gap: 4px;
-    /* border-left: 1px solid black */
 }
 
 .supermarket-card-quantity-input {
@@ -117,15 +106,10 @@
 }
 
 .supermarket-card-metric {
-    /* right: 24px;
-    top: 0px;
-    bottom: 0px;
-    margin: auto; */
     height: fit-content;
 }
 
 .supermarket-card-select-btn {
-    /* border-top: 1px solid black; */
     height: 15%;
     width: 100%;
     display: flex;

@@ -4,7 +4,7 @@ import { AbstractControl, FormControl, FormGroup, ReactiveFormsModule, Validatio
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { UserService } from '../user.service';
 import { EMPTY, catchError, first } from 'rxjs';
-const passwordMatchValidatorFunc = (password: string): ValidatorFn => (control: AbstractControl): ValidationErrors | null => {
+export const passwordMatchValidatorFunc = (password: string): ValidatorFn => (control: AbstractControl): ValidationErrors | null => {
   console.log("Checking Password")
   const password = control.parent?.get('password') ? control.parent?.get('password')!.value : ''
   const forbidden = control.value != password

@@ -103,7 +103,6 @@
 }
 
 .grocerylist-price-container {
-    /* border-top: 1px solid black; */
     height: 80px;
     width: 100%;
     display: flex;
@@ -206,7 +205,6 @@ input {
     flex-direction: row;
     height: 80px;
     font-size: xx-large;
-    /* border-top: 1px solid black; */
     width: 100%;
 }
 

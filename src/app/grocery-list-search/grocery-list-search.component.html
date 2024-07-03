@@ -22,7 +22,7 @@
                 (mouseup)="toggleSupermarket($event, 'paknsave')">
                 <app-packn-save-svg class="price-logo"></app-packn-save-svg>
             </div>
-            <div class="countdown-bg supermarket-btn"
+            <div *ngIf="showCountdown" class="countdown-bg supermarket-btn"
                 [class]="selectedSupermarkets.includes('countdown') ? '' : 'disabled' "
                 (mouseup)="toggleSupermarket($event, 'countdown')">
                 <app-countdown-svg class="price-logo"></app-countdown-svg>

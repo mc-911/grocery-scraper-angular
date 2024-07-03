@@ -111,4 +111,18 @@ export class UserService {
     const url = environment.apiUrl + '/user/' + id
     return this.http.delete<any>(url).pipe(catchError(this.handleDeleteUserError))
   }
+
+  resetPassword(token: string, newPassword: string) {
+    const url = environment.apiUrl + '/resetPassword'
+    const headers = new HttpHeaders({
+      "Authorization": token
+    });
+    return this.http.patch<any>(url, { newPassword }, { headers }).pipe(catchError(this.handleDeleteUserError))
+  }
+
+  sendResetPasswordEmail(email: string) {
+    const url = environment.apiUrl + '/resetPasswordEmail'
+    return this.http.post<any>(url, { email }).pipe(catchError(this.handleDeleteUserError))
+  }
+
 }

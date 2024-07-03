@@ -12,6 +12,7 @@ import { NgFor, NgIf, NgSwitch, NgSwitchCase } from '@angular/common';
 import { SupermarketItemCardComponent } from '../supermarket-item-card/supermarket-item-card.component';
 import { TotalContainerComponent } from '../total-container/total-container.component';
 import { AuthService } from '../auth.service';
+import { environment } from '../../environments/environment';
 
 export enum searchStateEnum {
   NO_SEARCH,
@@ -32,7 +33,7 @@ export class GroceryListSearchComponent {
   sortingOptions = [{ name: "Popularity", value: "POPULARITY" }, { name: 'Price - Low to High', value: 'ASC' }, { name: 'Price - High to Low', value: 'DESC' }]
   selectedCategory = ''
   selectedSort = ''
-  selectedSupermarkets = this.groceryService.selectedSupermarkets
+  selectedSupermarkets: string[] = []
   searchQuery = new FormControl('');
   newGroceryListItemInfo: GroceryItemData | null = null
   newGroceryListItemInfoQuantity = new FormControl(1);
@@ -44,6 +45,11 @@ export class GroceryListSearchComponent {
   ngOnInit() {
     if (this.selectedGroceryListItem.searchState == searchStateEnum.NO_SEARCH && this.groceryService.autoSearch) {
       this.search()
+    }
+    this.selectedSupermarkets = this.groceryService.selectedSupermarkets
+    if (!environment.showCountdown && this.selectedSupermarkets.includes(SupermarketEnum.COUNTDOWN)) {
+      this.groceryService.toggleSupermarket(SupermarketEnum.COUNTDOWN)
+      this.selectedSupermarkets = this.groceryService.selectedSupermarkets
     }
   }
 
@@ -59,6 +65,10 @@ export class GroceryListSearchComponent {
 
   public get SearchStateEnum() {
     return searchStateEnum
+  }
+
+  get showCountdown() {
+    return environment.showCountdown
   }
   public search() {
     const currentLocation = this.locationService.currentLocation
@@ -81,8 +91,6 @@ export class GroceryListSearchComponent {
       this.selectedGroceryListItem.searchState = searchStateEnum.LOADING;
       this.groceryService.grocerySearch(searchQuery, this.selectedSupermarkets, this.selectedSort, this.selectedCategory, currentLocation!.latitude, currentLocation!.longitude).pipe(catchError(() => {
         console.log("Handle this error")
-        this.authService.authToken = ""
-        this.authService.checkAuth()
         return EMPTY;
       })).subscribe((resp) => {
         if (this.selectedGroceryListItem) {
