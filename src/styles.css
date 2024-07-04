@@ -387,12 +387,13 @@ dialog:active {
 .email-sent-container {
     display: flex;
     flex-direction: column;
-    background-color: black;
     color: white;
     width: 800px;
     gap: 24px;
     padding-inline: 25px;
     padding-block: 30px;
+    border: white 5px solid;
+    border-radius: 10px;
 
 }
 
