@@ -89,22 +89,17 @@
 
 .results-container {
     flex-grow: 1;
-    /* border-top: 1px solid black; */
     display: flex;
     flex-direction: column;
     overflow-x: hidden;
     overflow-y: auto;
 }
 
-/* .results-container>.supermarket-container:not(:first-child) {
-    border-top: 1px solid black;
-} */
 
 .supermarket-container {
     display: flex;
     flex-direction: column;
     width: 100%;
-    /* border-bottom: 1px solid black; */
 }
 
 .results-container:last-child {
@@ -123,8 +118,7 @@
 
 
 
-.supermarket-results-container {
-    /* border-top: 1px solid black; */
+.supermarket-card-container {
     flex-grow: 1;
     display: flex;
     flex-direction: row;
@@ -137,6 +131,12 @@
 }
 
 
+.noResultsMessage {
+    height: 316px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
 
 
 .enter-query-message {
