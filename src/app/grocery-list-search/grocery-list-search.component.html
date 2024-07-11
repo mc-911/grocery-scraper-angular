@@ -54,38 +54,38 @@
         <div *ngIf="selectedSupermarkets.includes(SupermarketEnum.PAKNSAVE) && selectedGroceryListItem.results"
             class="supermarket-container">
             <div class="supermarket-name">PAK'nSAVE</div>
-            <div class="supermarket-results-container">
-                <app-supermarket-item-card #showPakNSaveResults
-                    *ngFor="let item of selectedGroceryListItem.results[SupermarketEnum.PAKNSAVE]![0]"
+            <div *ngIf="selectedGroceryListItem.results.paknsave && selectedGroceryListItem.results.paknsave.length"
+                class="supermarket-card-container">
+                <app-supermarket-item-card *ngFor="let item of selectedGroceryListItem.results.paknsave[0]"
                     [selected]="isSelectedGroceryListInfo(item.productCode, item.supermarket)"
                     (selectedGroceryListItemEvent)="selectGroceryListItemInfo($event)" [data]="item" />
-                <div *ngIf="selectedGroceryListItem!.results.paknsave?.length == 0;" class="noResultsMessage">
-                    No Results</div>
             </div>
+            <div *ngIf="selectedGroceryListItem!.results.paknsave?.length == 0;" class="noResultsMessage">
+                No Results</div>
         </div>
         <div *ngIf="selectedSupermarkets.includes('countdown') && selectedGroceryListItem.results"
             class="supermarket-container">
             <div class="supermarket-name">Countdown</div>
-            <div class="supermarket-results-container">
-                <app-supermarket-item-card
-                    *ngFor="let item of selectedGroceryListItem.results[SupermarketEnum.COUNTDOWN]![0]"
-                    (selectedGroceryListItemEvent)="selectGroceryListItemInfo($event)"
-                    [selected]="isSelectedGroceryListInfo(item.productCode, item.supermarket)" [data]="item" />
-                <div *ngIf="selectedGroceryListItem!.results.countdown?.length == 0;" class="noResultsMessage">
-                    No Results</div>
+            <div *ngIf="selectedGroceryListItem.results.countdown && selectedGroceryListItem.results.countdown.length"
+                class="supermarket-card-container">
+                <app-supermarket-item-card *ngFor="let item of selectedGroceryListItem.results.countdown[0]"
+                    [selected]="isSelectedGroceryListInfo(item.productCode, item.supermarket)"
+                    (selectedGroceryListItemEvent)="selectGroceryListItemInfo($event)" [data]="item" />
             </div>
+            <div *ngIf="selectedGroceryListItem!.results.countdown?.length == 0;" class="noResultsMessage">
+                No Results</div>
         </div>
         <div *ngIf="selectedSupermarkets.includes('newworld') && selectedGroceryListItem.results"
             class="supermarket-container">
             <div class="supermarket-name">New World</div>
-            <div class="supermarket-results-container">
-                <app-supermarket-item-card
-                    *ngFor="let item of selectedGroceryListItem.results[SupermarketEnum.NEW_WORLD]![0]"
-                    (selectedGroceryListItemEvent)="selectGroceryListItemInfo($event)"
-                    [selected]="isSelectedGroceryListInfo(item.productCode, item.supermarket)" [data]="item" />
-                <div *ngIf="selectedGroceryListItem!.results.newworld?.length == 0;" class="noResultsMessage">
-                    No Results</div>
+            <div *ngIf="selectedGroceryListItem.results.newworld && selectedGroceryListItem.results.newworld.length"
+                class="supermarket-card-container">
+                <app-supermarket-item-card *ngFor="let item of selectedGroceryListItem.results.newworld[0]"
+                    [selected]="isSelectedGroceryListInfo(item.productCode, item.supermarket)"
+                    (selectedGroceryListItemEvent)="selectGroceryListItemInfo($event)" [data]="item" />
             </div>
+            <div *ngIf="selectedGroceryListItem!.results.newworld?.length == 0;" class="noResultsMessage">
+                No Results</div>
         </div>
     </div>
 </ng-container>
