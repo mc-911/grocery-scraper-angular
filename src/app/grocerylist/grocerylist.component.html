@@ -17,8 +17,10 @@
 </div>
 <div *ngIf="showDetail; else searchSection" class="viewWithTotalContainer">
     <app-grocery-list-detail (removeItemEvent)="removeGroceryListItem($event)" [groceryListItems]="groceryListItems" />
-    <app-total-container [total]="getFormattedMinTotal()" (detailBtnClickEvent)="toggleShowDetail()"
-        (menuBtnClickEvent)="toggleOptionsModal()" />
+    <div class="viewContainerSecondaryBg ">
+        <app-total-container [total]="getFormattedMinTotal()" (detailBtnClickEvent)="toggleShowDetail()"
+            (menuBtnClickEvent)="toggleOptionsModal()" />
+    </div>
 </div>
 <ng-template #searchSection>
     <div class="viewWithTotalContainer" *ngIf="selectedGroceryListItem != null; else noSelectedGroceryListSection">
@@ -26,8 +28,10 @@
             [style]="mobile && selectedGroceryListItem ? 'display: flex;' : ''"
             [selectedGroceryListItem]="selectedGroceryListItem" (returnBtnClickEvent)="unselectGroceryListItem()"
             (addNotificationEvent)="addNotification($event)" />
-        <app-total-container *ngIf="mobile" [total]="getFormattedMinTotal()" (detailBtnClickEvent)="toggleShowDetail()"
-            (menuBtnClickEvent)="toggleOptionsModal()" />
+        <div class="viewContainerSecondaryBg ">
+            <app-total-container *ngIf="mobile" [total]="getFormattedMinTotal()"
+                (detailBtnClickEvent)="toggleShowDetail()" (menuBtnClickEvent)="toggleOptionsModal()" />
+        </div>
     </div>
     <ng-template #noSelectedGroceryListSection>
         <div class="noSelectedGroceryListItem">

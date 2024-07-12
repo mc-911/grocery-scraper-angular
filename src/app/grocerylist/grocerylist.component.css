@@ -179,8 +179,10 @@ input {
     border-color: black;
 }
 
-/** Search Section **/
-
+.viewContainerSecondaryBg {
+    background-color: var(--secondary-color);
+    width: 35%;
+}
 
 
 
@@ -216,6 +218,7 @@ input {
     flex-direction: column;
     flex-grow: 1;
     overflow-x: hidden;
+    width: 35;
 }
 
 @media (max-width: 480px) {
@@ -261,5 +264,9 @@ input {
 
     .mobile-only {
         display: flex;
+    }
+
+    .viewContainerSecondaryBg {
+        width: 100%;
     }
 }
