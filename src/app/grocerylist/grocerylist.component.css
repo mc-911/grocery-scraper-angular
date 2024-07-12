@@ -1,19 +1,19 @@
 :host {
     display: flex;
     flex-direction: row;
-}
-
-.selected {
-    --border-color: var(--tertiary-color);
-}
-
-.grocerylist-container {
+    background-color: var(--primary-color);
     height: 100vh;
     width: 100vw;
     display: flex;
     flex-direction: row;
     overflow: hidden;
 }
+
+.selected {
+    --border-color: var(--tertiary-color);
+}
+
+.grocerylist-container {}
 
 .grocerylist {
     width: 35%;
@@ -121,7 +121,7 @@
     justify-content: center;
     align-items: center;
     overflow: hidden;
-    background-color: var(--primary-color);
+    background-color: var(--tertiary-color);
     border-radius: 10px;
     box-sizing: border-box;
     margin-top: 3px;
@@ -134,7 +134,7 @@
 }
 
 .grocerylist-add-btn>svg>path {
-    stroke: var(--tertiary-color);
+    stroke: var(--secondary-color);
 }
 
 .addGroceryListItemFlexContainer {
@@ -189,15 +189,10 @@ input {
     justify-content: center;
     align-items: center;
     width: 65%;
+    background-color: var(--primary-color);
 }
 
-.noResultsMessage {
-    height: 319px;
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
+
 
 
 .total-price-container {

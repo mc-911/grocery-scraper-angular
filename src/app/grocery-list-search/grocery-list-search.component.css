@@ -5,6 +5,7 @@
     overflow-x: hidden;
     gap: 12px;
     flex-grow: 1;
+    background-color: var(--primary-color);
 }
 
 .search-section {

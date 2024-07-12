@@ -1,74 +1,72 @@
-<div class="grocerylist-container">
-    <div class="grocerylist" [style]="mobile && selectedGroceryListItem || showDetail ? 'display: none;' : ''">
-        <div class="grocerylist-title">{{name}}</div>
-        <div class="grocerylist-items-container">
-            <app-grocery-list-item *ngFor="let item of groceryListItems; index as i" [data]="item"
-                (removeItemEvent)="removeGroceryListItem($event)" [index]="i"
-                (selectItemEvent)="selectGroceryListItem($event)"
-                [class]="item == selectedGroceryListItem ? 'selected' : ''" />
-        </div>
-        <div class="grocerylist-add-btn" (click)="toggleAddGroceryListModal()">
-            <svg stroke-width="1.5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" color="#000000">
-                <path d="M6 12H12M18 12H12M12 12V6M12 12V18" stroke="#000000" stroke-width="1.5" stroke-linecap="round"
-                    stroke-linejoin="round"></path>
-            </svg>
-        </div>
-        <app-total-container [total]="getFormattedMinTotal()" (detailBtnClickEvent)="toggleShowDetail()"
+<div class="grocerylist" [style]="mobile && selectedGroceryListItem || showDetail ? 'display: none;' : ''">
+    <div class="grocerylist-title">{{name}}</div>
+    <div class="grocerylist-items-container">
+        <app-grocery-list-item *ngFor="let item of groceryListItems; index as i" [data]="item"
+            (removeItemEvent)="removeGroceryListItem($event)" [index]="i"
+            (selectItemEvent)="selectGroceryListItem($event)"
+            [class]="item == selectedGroceryListItem ? 'selected' : ''" />
+    </div>
+    <div class="grocerylist-add-btn" (click)="toggleAddGroceryListModal()">
+        <svg stroke-width="1.5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" color="#000000">
+            <path d="M6 12H12M18 12H12M12 12V6M12 12V18" stroke="#000000" stroke-width="1.5" stroke-linecap="round"
+                stroke-linejoin="round"></path>
+        </svg>
+    </div>
+    <app-total-container [total]="getFormattedMinTotal()" (detailBtnClickEvent)="toggleShowDetail()"
+        (menuBtnClickEvent)="toggleOptionsModal()" />
+</div>
+<div *ngIf="showDetail; else searchSection" class="viewWithTotalContainer">
+    <app-grocery-list-detail (removeItemEvent)="removeGroceryListItem($event)" [groceryListItems]="groceryListItems" />
+    <app-total-container [total]="getFormattedMinTotal()" (detailBtnClickEvent)="toggleShowDetail()"
+        (menuBtnClickEvent)="toggleOptionsModal()" />
+</div>
+<ng-template #searchSection>
+    <div class="viewWithTotalContainer" *ngIf="selectedGroceryListItem != null; else noSelectedGroceryListSection">
+        <app-grocery-list-search class="search-container"
+            [style]="mobile && selectedGroceryListItem ? 'display: flex;' : ''"
+            [selectedGroceryListItem]="selectedGroceryListItem" (returnBtnClickEvent)="unselectGroceryListItem()"
+            (addNotificationEvent)="addNotification($event)" />
+        <app-total-container *ngIf="mobile" [total]="getFormattedMinTotal()" (detailBtnClickEvent)="toggleShowDetail()"
             (menuBtnClickEvent)="toggleOptionsModal()" />
     </div>
-    <div *ngIf="showDetail; else searchSection" class="viewWithTotalContainer">
-        <app-grocery-list-detail (removeItemEvent)="removeGroceryListItem($event)"
-            [groceryListItems]="groceryListItems" />
-        <app-total-container [total]="getFormattedMinTotal()" (detailBtnClickEvent)="toggleShowDetail()"
-            (menuBtnClickEvent)="toggleOptionsModal()" />
-    </div>
-    <ng-template #searchSection>
-        <div class="viewWithTotalContainer" *ngIf="selectedGroceryListItem != null; else noSelectedGroceryListSection">
-            <app-grocery-list-search class="search-container"
-                [style]="mobile && selectedGroceryListItem ? 'display: flex;' : ''"
-                [selectedGroceryListItem]="selectedGroceryListItem" (returnBtnClickEvent)="unselectGroceryListItem()"
-                (addNotificationEvent)="addNotification($event)" />
-            <app-total-container *ngIf="mobile" [total]="getFormattedMinTotal()"
-                (detailBtnClickEvent)="toggleShowDetail()" (menuBtnClickEvent)="toggleOptionsModal()" />
+    <ng-template #noSelectedGroceryListSection>
+        <div class="noSelectedGroceryListItem">
+            Add or Select a Grocery Item to start searching
         </div>
-        <ng-template #noSelectedGroceryListSection>
-            <div class="noSelectedGroceryListItem">
-                Add or Select a Grocery Item to start searching
-            </div>
-        </ng-template>
     </ng-template>
+</ng-template>
 
-    <dialog id="addGroceryListItemModal">
-        <div class="menuContainer">
-            <div class="menuHeader">
-                <div class="return-btn absolute" (click)="toggleAddGroceryListModal()">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                        <path d="M21 11H6.414l5.293-5.293-1.414-1.414L2.586 12l7.707 7.707 1.414-1.414L6.414 13H21z">
-                        </path>
-                    </svg>
-                </div>
-                <div class="menu-header-name">
-                    New Grocery List Item
-                </div>
+<dialog id="addGroceryListItemModal">
+    <div class="menuContainer">
+        <div class="menuHeader">
+            <div class="return-btn absolute" (click)="toggleAddGroceryListModal()">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <path d="M21 11H6.414l5.293-5.293-1.414-1.414L2.586 12l7.707 7.707 1.414-1.414L6.414 13H21z">
+                    </path>
+                </svg>
             </div>
-            <div class="addGroceryListItemInputSection">
-                <div class="input-container">
-                    <label>Name</label>
-                    <input [formControl]="newGroceryListItemName" id="groceryListItemName" type="text"
-                        (keydown.enter)="addGroceryListItem()" />
-                </div>
-                <!-- <div class="input-container">
+            <div class="menu-header-name">
+                New Grocery List Item
+            </div>
+        </div>
+        <div class="addGroceryListItemInputSection">
+            <div class="input-container">
+                <label>Name</label>
+                <input [formControl]="newGroceryListItemName" id="groceryListItemName" type="text"
+                    (keydown.enter)="addGroceryListItem()" />
+            </div>
+            <!-- <div class="input-container">
                     <label>Search Query</label>
                     <input [formControl]="newGroceryListSearchQuery" id="groceryListItemSearchQuery" type="text" />
                 </div> -->
-            </div>
-            <div class="primary-bg btn" (click)="addGroceryListItem()">
-                Add
-            </div>
         </div>
-    </dialog>
+        <div class="tertiary-bg btn" (click)="addGroceryListItem()">
+            Add
+        </div>
+    </div>
+</dialog>
 
-    <!-- <dialog id="settingsDialog">
+<!-- <dialog id="settingsDialog">
         <div class="menuContainer">
             <div class="menuHeader">
                 <div class="return-btn absolute" (click)="toggleSettingsModal()">
@@ -101,97 +99,95 @@
         </div>
     </dialog> -->
 
-    <dialog #setPreferencesDialog>
-        <div class="menuContainer">
-            <div class="menuHeader">
-                <div class="menu-header-name">
-                    Welcome to Grocery List Plus
-                </div>
-            </div>
-            <div class="menuSubheader">Please select the grocery stores you'd like to search</div>
-            <div class="selectPreferencesSubcontainer">
-                <div class="selectGroceryStoresContainer">
-                    <div [class]="selectedSupermarkets.includes('paknsave') ? 'paknsave-bg' : 'disabled' "
-                        (mouseup)="toggleSupermarket($event, 'paknsave')">
-                        <app-packn-save-svg class="price-logo-lg" />
-                    </div>
-                    <div *ngIf="showCountdown"
-                        [class]="selectedSupermarkets.includes('countdown') ? 'countdown-bg' : 'disabled' "
-                        (mouseup)="toggleSupermarket($event, 'countdown')">
-                        <app-countdown-svg class="price-logo-lg" />
-                    </div>
-                    <div [class]="selectedSupermarkets.includes('newworld') ? 'newworld-bg' : 'disabled' "
-                        (mouseup)="toggleSupermarket($event, 'newworld')">
-                        <app-new-world-svg class="price-logo-lg" />
-                    </div>
-                </div>
-            </div>
-            <div class="primary-bg btn" (click)="setPreferencesDialog.close()">
-                Continue
+<dialog #setPreferencesDialog>
+    <div class="menuContainer">
+        <div class="menuHeader">
+            <div class="menu-header-name">
+                Welcome to Grocery List Plus
             </div>
         </div>
-    </dialog>
-    <dialog #optionsMenuDialog>
-        <div class="menuContainer">
-            <div class="menuHeader">
-                <div class="return-btn absolute" (click)="toggleOptionsModal()">
+        <div class="menuSubheader">Please select the grocery stores you'd like to search</div>
+        <div class="selectPreferencesSubcontainer">
+            <div class="selectGroceryStoresContainer">
+                <div [class]="selectedSupermarkets.includes('paknsave') ? 'paknsave-bg' : 'disabled' "
+                    (mouseup)="toggleSupermarket($event, 'paknsave')">
+                    <app-packn-save-svg class="price-logo-lg" />
+                </div>
+                <div *ngIf="showCountdown"
+                    [class]="selectedSupermarkets.includes('countdown') ? 'countdown-bg' : 'disabled' "
+                    (mouseup)="toggleSupermarket($event, 'countdown')">
+                    <app-countdown-svg class="price-logo-lg" />
+                </div>
+                <div [class]="selectedSupermarkets.includes('newworld') ? 'newworld-bg' : 'disabled' "
+                    (mouseup)="toggleSupermarket($event, 'newworld')">
+                    <app-new-world-svg class="price-logo-lg" />
+                </div>
+            </div>
+        </div>
+        <div class="tertiary-bg btn" (click)="setPreferencesDialog.close()">
+            Continue
+        </div>
+    </div>
+</dialog>
+<dialog #optionsMenuDialog>
+    <div class="menuContainer">
+        <div class="menuHeader">
+            <div class="return-btn absolute" (click)="toggleOptionsModal()">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <path d="M21 11H6.414l5.293-5.293-1.414-1.414L2.586 12l7.707 7.707 1.414-1.414L6.414 13H21z">
+                    </path>
+                </svg>
+            </div>
+            <div class="menu-header-name">
+                Menu
+            </div>
+        </div>
+        <div class="optionsMenuItems">
+            <div (click)="toggleViewGroceryListsModal()" class="optionsMenuItem">
+                <div class="iconContainer">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                        <path d="M21 11H6.414l5.293-5.293-1.414-1.414L2.586 12l7.707 7.707 1.414-1.414L6.414 13H21z">
+                        <path
+                            d="M20 5h-8.586L9.707 3.293A.997.997 0 0 0 9 3H4c-1.103 0-2 .897-2 2v14c0 1.103.897 2 2 2h16c1.103 0 2-.897 2-2V7c0-1.103-.897-2-2-2zM4 19V7h16l.002 12H4z">
                         </path>
                     </svg>
                 </div>
-                <div class="menu-header-name">
-                    Menu
+                <div class="label">
+                    View Lists
                 </div>
             </div>
-            <div class="optionsMenuItems">
-                <div (click)="toggleViewGroceryListsModal()" class="optionsMenuItem">
-                    <div class="iconContainer">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                            <path
-                                d="M20 5h-8.586L9.707 3.293A.997.997 0 0 0 9 3H4c-1.103 0-2 .897-2 2v14c0 1.103.897 2 2 2h16c1.103 0 2-.897 2-2V7c0-1.103-.897-2-2-2zM4 19V7h16l.002 12H4z">
-                            </path>
-                        </svg>
-                    </div>
-                    <div class="label">
-                        View Lists
-                    </div>
+            <div (click)="toggleCreateGroceryListModal()" class="optionsMenuItem">
+                <div class="iconContainer">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M19 15v-3h-2v3h-3v2h3v3h2v-3h3v-2h-.937zM4 7h11v2H4zm0 4h11v2H4zm0 4h8v2H4z">
+                        </path>
+                    </svg>
                 </div>
-                <div (click)="toggleCreateGroceryListModal()" class="optionsMenuItem">
-                    <div class="iconContainer">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                            <path d="M19 15v-3h-2v3h-3v2h3v3h2v-3h3v-2h-.937zM4 7h11v2H4zm0 4h11v2H4zm0 4h8v2H4z">
-                            </path>
-                        </svg>
-                    </div>
-                    <div class="label">New List</div>
-                </div>
-                <div (click)="toggleSettingsDialog()" class="optionsMenuItem">
-                    <div class="iconContainer">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                            <path
-                                d="m2.344 15.271 2 3.46a1 1 0 0 0 1.366.365l1.396-.806c.58.457 1.221.832 1.895 1.112V21a1 1 0 0 0 1 1h4a1 1 0 0 0 1-1v-1.598a8.094 8.094 0 0 0 1.895-1.112l1.396.806c.477.275 1.091.11 1.366-.365l2-3.46a1.004 1.004 0 0 0-.365-1.366l-1.372-.793a7.683 7.683 0 0 0-.002-2.224l1.372-.793c.476-.275.641-.89.365-1.366l-2-3.46a1 1 0 0 0-1.366-.365l-1.396.806A8.034 8.034 0 0 0 15 4.598V3a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v1.598A8.094 8.094 0 0 0 7.105 5.71L5.71 4.904a.999.999 0 0 0-1.366.365l-2 3.46a1.004 1.004 0 0 0 .365 1.366l1.372.793a7.683 7.683 0 0 0 0 2.224l-1.372.793c-.476.275-.641.89-.365 1.366zM12 8c2.206 0 4 1.794 4 4s-1.794 4-4 4-4-1.794-4-4 1.794-4 4-4z">
-                            </path>
-                        </svg>
-                    </div>
-                    <div class="label">Settings</div>
-                </div>
+                <div class="label">New List</div>
             </div>
-            <div class="red-bg btn" (click)="userService.logOut()">
-                Log out
+            <div (click)="toggleSettingsDialog()" class="optionsMenuItem">
+                <div class="iconContainer">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path
+                            d="m2.344 15.271 2 3.46a1 1 0 0 0 1.366.365l1.396-.806c.58.457 1.221.832 1.895 1.112V21a1 1 0 0 0 1 1h4a1 1 0 0 0 1-1v-1.598a8.094 8.094 0 0 0 1.895-1.112l1.396.806c.477.275 1.091.11 1.366-.365l2-3.46a1.004 1.004 0 0 0-.365-1.366l-1.372-.793a7.683 7.683 0 0 0-.002-2.224l1.372-.793c.476-.275.641-.89.365-1.366l-2-3.46a1 1 0 0 0-1.366-.365l-1.396.806A8.034 8.034 0 0 0 15 4.598V3a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v1.598A8.094 8.094 0 0 0 7.105 5.71L5.71 4.904a.999.999 0 0 0-1.366.365l-2 3.46a1.004 1.004 0 0 0 .365 1.366l1.372.793a7.683 7.683 0 0 0 0 2.224l-1.372.793c-.476.275-.641.89-.365 1.366zM12 8c2.206 0 4 1.794 4 4s-1.794 4-4 4-4-1.794-4-4 1.794-4 4-4z">
+                        </path>
+                    </svg>
+                </div>
+                <div class="label">Settings</div>
             </div>
         </div>
-    </dialog>
-    <dialog #createGroceryListModal>
-        <app-create-grocery-list (returnBtnClickEvent)="toggleCreateGroceryListModal()" />
-    </dialog>
-    <dialog #viewGroceryListsModal>
-        <app-view-grocery-lists (groceryListDeletedEvent)="checkIfGroceryListDeleted($event)"
-            (returnBtnClickEvent)="toggleViewGroceryListsModal()" />
-    </dialog>
-    <dialog #settingsDialog>
-        <app-settings (returnBtnClickEvent)="toggleSettingsDialog()" />
-    </dialog>
-    <app-notification-container [messages]="notifications"></app-notification-container>
-
-</div>
+        <div class="red-bg btn" (click)="userService.logOut()">
+            Log out
+        </div>
+    </div>
+</dialog>
+<dialog #createGroceryListModal>
+    <app-create-grocery-list (returnBtnClickEvent)="toggleCreateGroceryListModal()" />
+</dialog>
+<dialog #viewGroceryListsModal>
+    <app-view-grocery-lists (groceryListDeletedEvent)="checkIfGroceryListDeleted($event)"
+        (returnBtnClickEvent)="toggleViewGroceryListsModal()" />
+</dialog>
+<dialog #settingsDialog>
+    <app-settings (returnBtnClickEvent)="toggleSettingsDialog()" />
+</dialog>
+<app-notification-container [messages]="notifications"></app-notification-container>

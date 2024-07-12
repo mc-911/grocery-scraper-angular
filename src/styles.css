@@ -4,11 +4,11 @@
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap');
 
 :root {
-    --primary-color: : white;
-    --secondary-color: grey;
+    --primary-color: #EEEEEE;
+    --secondary-color: #f0dc8f;
     --text-color: black;
     --border-color: black;
-    --tertiary-color: aqua;
+    --tertiary-color: #FC5185;
     background: var(--primary-color);
     color: var(--text-color);
     scrollbar-color: var(--text-color) var(--primary-color);
@@ -39,7 +39,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    color: white;
+    color: var(--secondary-color);
     font-weight: 700;
     cursor: pointer;
     border: none;
@@ -107,6 +107,10 @@ body {
 
 .secondary-bg {
     background-color: var(--secondary-color);
+}
+
+.tertiary-bg {
+    background-color: var(--tertiary-color);
 }
 
 
