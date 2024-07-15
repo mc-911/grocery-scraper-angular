@@ -9,7 +9,7 @@ import { NewWorldSvgComponent } from '../new-world-svg/new-world-svg.component';
 import { DropdownComponent } from '../dropdown/dropdown.component';
 import { NotificationContainerComponent } from '../notification-container/notification-container.component';
 import { TotalContainerComponent } from '../total-container/total-container.component';
-import { GroceryItemData, GroceryService } from '../grocery.service';
+import { GroceryItemData, GrocerySearchCategories, GrocerySearchOrders, GrocerySearchQuery, GrocerySearchResponseSingle, GroceryService } from '../grocery.service';
 import { EMPTY, catchError } from 'rxjs';
 import { AuthService } from '../auth.service';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -79,10 +79,14 @@ export class GrocerylistComponent {
             supermarketDataDict: supermarketDataDict,
             searchState: searchStateEnum.NO_SEARCH,
             searchQuery: item.searchQuery,
+            searchOrder: item.order,
+            categories: item.categories,
             groceryListItemId: item.groceryListItemId
           }
         })
-        console.log(this.groceryListItems);
+        if (this.groceryListItems.length) {
+          this.searchAllGroceryListItems()
+        }
       })
     }
 
@@ -139,10 +143,12 @@ export class GrocerylistComponent {
     if (this.newGroceryListItemName.value) {
       const newName = this.newGroceryListItemName.value
       const searchQuery = newName
-      this.groceryService.createGroceryListItem(newName, this.id, searchQuery).pipe(catchError(() => {
+      const defaultCategories = [GrocerySearchCategories.GENERAL]
+      const defaultOrder = GrocerySearchOrders.POPULARITY
+      this.groceryService.createGroceryListItem(newName, this.id, searchQuery, defaultCategories, defaultOrder).pipe(catchError(() => {
         return EMPTY
       })).subscribe((response) => {
-        this.selectedGroceryListItem = { name: newName, supermarketDataDict: {}, searchState: searchStateEnum.NO_SEARCH, searchQuery: searchQuery, groceryListItemId: response.id }
+        this.selectedGroceryListItem = { name: newName, supermarketDataDict: {}, searchState: searchStateEnum.NO_SEARCH, searchQuery: searchQuery, groceryListItemId: response.id, searchOrder: defaultOrder, categories: defaultCategories }
         console.log(this.selectedGroceryListItem)
         this.groceryListItems.push(this.selectedGroceryListItem)
         // this.searchQuery.setValue(this.newGroceryListItemName.value)
@@ -272,6 +278,39 @@ export class GrocerylistComponent {
 
   public toggleShowDetail() {
     this.showDetail = !this.showDetail
+  }
+
+  public searchAllGroceryListItems() {
+    const location = this.locationService.currentLocation
+    if (location) {
+      const queries: GrocerySearchQuery[] = this.groceryListItems.map((item) => {
+        item.searchState = searchStateEnum.LOADING
+        return { query: item.searchQuery, categories: item.categories, order: item.searchOrder }
+      })
+      this.groceryService.grocerySearch(queries, this.selectedSupermarkets, location.latitude, location.longitude).pipe(catchError(() => {
+        //Handle this error
+        return EMPTY
+      })).subscribe((response) => {
+        for (let i = 0; i < this.groceryListItems.length; i++) {
+          const groceryListItem = this.groceryListItems[i]
+          const results: GrocerySearchResponseSingle = {}
+          if (SupermarketEnum.PAKNSAVE in response) {
+            results[SupermarketEnum.PAKNSAVE] = response[SupermarketEnum.PAKNSAVE]![i]
+          }
+          if (SupermarketEnum.NEW_WORLD in response) {
+            results[SupermarketEnum.NEW_WORLD] = response[SupermarketEnum.NEW_WORLD]![i]
+          }
+          if (SupermarketEnum.COUNTDOWN in response) {
+            results[SupermarketEnum.COUNTDOWN] = response[SupermarketEnum.COUNTDOWN]![i]
+          }
+          groceryListItem.results = results
+          groceryListItem.searchState = searchStateEnum.SEARCHED
+        }
+      })
+    } else {
+      this.locationService.setCurrentLocation()
+    }
+
   }
 
 }

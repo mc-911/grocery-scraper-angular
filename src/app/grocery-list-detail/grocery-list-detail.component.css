@@ -10,7 +10,6 @@
 .supermarket {
     display: flex;
     flex-direction: column;
-    /* gap: 12px; */
     gap: 12px;
     align-items: center;
     width: 500px;
@@ -58,11 +57,9 @@
 
 .groceryListItemName {
     font-size: 1.4rem;
-    /* height: 60px; */
     display: flex;
     align-items: center;
     justify-content: center;
-    /* height: 60px; */
 }
 
 .groceryDataName,

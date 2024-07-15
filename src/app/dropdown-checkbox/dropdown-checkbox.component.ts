@@ -1,21 +1,19 @@
+import { Component, ElementRef, EventEmitter, Input, Output } from '@angular/core';
+import { dropdownItem } from '../dropdown/dropdown.component';
 import { NgFor } from '@angular/common';
-import { Component, EventEmitter, Input, Output, ElementRef } from '@angular/core';
 
-export type dropdownItem = {
-  name: string,
-  value: string
-}
 @Component({
-  selector: 'app-dropdown',
+  selector: 'app-dropdown-checkbox',
   standalone: true,
   imports: [NgFor],
-  templateUrl: './dropdown.component.html',
-  styleUrl: './dropdown.component.css'
+  templateUrl: './dropdown-checkbox.component.html',
+  styleUrl: './dropdown-checkbox.component.css'
 })
-export class DropdownComponent {
+export class DropdownCheckboxComponent {
   @Input() options: dropdownItem[] = []
   @Output() selectOptionEvent = new EventEmitter<number>();
-  @Input() selectedOption = 0;
+  @Input() selectedOptions: number[] = []
+  @Input() label = ""
   optionsVisible = false;
   callback = (event: Event) => {
     const element = (event.target as HTMLElement);
@@ -28,7 +26,6 @@ export class DropdownComponent {
 
   constructor(private el: ElementRef) { }
   public selectOption(index: number) {
-    this.selectedOption = index;
     this.selectOptionEvent.emit(index)
     this.toggleDropdown()
     window.removeEventListener("click", this.callback)

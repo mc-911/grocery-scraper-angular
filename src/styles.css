@@ -4,10 +4,10 @@
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap');
 
 :root {
-    --primary-color: #EEEEEE;
-    --secondary-color: #f0dc8f;
-    --text-color: black;
-    --border-color: black;
+    --primary-color: #F5F5DC;
+    --secondary-color: #E9DCC9;
+    --text-color: #36454F;
+    --border-color: #36454F;
     --tertiary-color: #FC5185;
     background: var(--primary-color);
     color: var(--text-color);
@@ -230,7 +230,7 @@ form {
 .optionsMenuItem {
     display: flex;
     flex-direction: column;
-    background-color: var(--primary-color);
+    background-color: var(--secondary-color);
     border-radius: 10px;
     width: 150px;
     height: 150px;
@@ -262,7 +262,7 @@ form {
 dialog {
     border-width: 0px;
     position: absolute;
-    background-color: var(--secondary-color);
+    background-color: var(--primary-color);
     color: var(--text-color);
     fill: var(--text-color);
 }
@@ -277,7 +277,7 @@ dialog::backdrop {
     height: 400px;
     width: 450px;
     align-items: center;
-    background-color: var(--secondary-color);
+    background-color: var(--primary-color);
     color: var(--text-color);
     justify-content: space-between;
 }
@@ -288,7 +288,7 @@ dialog::backdrop {
     height: 400px;
     width: 450px;
     align-items: center;
-    background-color: var(--secondary-color);
+    background-color: var(--primary-color);
     color: var(--text-color);
 }
 
@@ -357,7 +357,7 @@ dialog:active {
     background-color: #FFD600;
 }
 
-.newworld-bg {
+.new_world-bg {
     background-color: #E11A2C;
 }
 

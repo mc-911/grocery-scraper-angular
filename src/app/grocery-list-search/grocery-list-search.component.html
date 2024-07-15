@@ -18,24 +18,26 @@
 
         <div class="supermarket-btn-container">
             <div class="paknsave-bg supermarket-btn"
-                [class]="selectedSupermarkets.includes('paknsave') ? '' : 'disabled' "
-                (mouseup)="toggleSupermarket($event, 'paknsave')">
+                [class]="selectedSupermarkets.includes(this.SupermarketEnum.PAKNSAVE) ? '' : 'disabled' "
+                (mouseup)="toggleSupermarket($event, this.SupermarketEnum.PAKNSAVE)">
                 <app-packn-save-svg class="price-logo"></app-packn-save-svg>
             </div>
             <div *ngIf="showCountdown" class="countdown-bg supermarket-btn"
-                [class]="selectedSupermarkets.includes('countdown') ? '' : 'disabled' "
-                (mouseup)="toggleSupermarket($event, 'countdown')">
+                [class]="selectedSupermarkets.includes(this.SupermarketEnum.COUNTDOWN) ? '' : 'disabled' "
+                (mouseup)="toggleSupermarket($event, this.SupermarketEnum.COUNTDOWN)">
                 <app-countdown-svg class="price-logo"></app-countdown-svg>
             </div>
-            <div class="newworld-bg supermarket-btn"
-                [class]="selectedSupermarkets.includes('newworld') ? '' : 'disabled' "
-                (mouseup)="toggleSupermarket($event, 'newworld')">
+            <div class="new_world-bg supermarket-btn"
+                [class]="selectedSupermarkets.includes(this.SupermarketEnum.NEW_WORLD) ? '' : 'disabled' "
+                (mouseup)="toggleSupermarket($event, this.SupermarketEnum.NEW_WORLD)">
                 <app-new-world-svg class="price-logo"></app-new-world-svg>
             </div>
         </div>
         <div class="sort-by-category-container">
-            <app-dropdown (selectOptionEvent)="selectCategory($event)" [options]="categories"></app-dropdown>
-            <app-dropdown (selectOptionEvent)="selectSort($event)" [options]="sortingOptions"></app-dropdown>
+            <app-dropdown-checkbox (selectOptionEvent)="selectCategory($event)" [options]="categories"
+                [selectedOptions]="this.selectedCategoriesIndexArray" [label]="'Categories'"></app-dropdown-checkbox>
+            <app-dropdown (selectOptionEvent)="selectSort($event)" [options]="sortingOptions"
+                [selectedOption]="selectedSortIndex"></app-dropdown>
         </div>
     </div>
 </div>
@@ -54,37 +56,37 @@
         <div *ngIf="selectedSupermarkets.includes(SupermarketEnum.PAKNSAVE) && selectedGroceryListItem.results"
             class="supermarket-container">
             <div class="supermarket-name">PAK'nSAVE</div>
-            <div *ngIf="selectedGroceryListItem.results.paknsave && selectedGroceryListItem.results.paknsave.length"
+            <div *ngIf="selectedGroceryListItem.results.PAKNSAVE && selectedGroceryListItem.results.PAKNSAVE.length"
                 class="supermarket-card-container">
-                <app-supermarket-item-card *ngFor="let item of selectedGroceryListItem.results.paknsave[0]"
+                <app-supermarket-item-card *ngFor="let item of selectedGroceryListItem.results.PAKNSAVE"
                     [selected]="isSelectedGroceryListInfo(item.productCode, item.supermarket)"
                     (selectedGroceryListItemEvent)="selectGroceryListItemInfo($event)" [data]="item" />
             </div>
-            <div *ngIf="selectedGroceryListItem!.results.paknsave?.length == 0;" class="noResultsMessage">
+            <div *ngIf="selectedGroceryListItem!.results.PAKNSAVE?.length == 0;" class="noResultsMessage">
                 No Results</div>
         </div>
-        <div *ngIf="selectedSupermarkets.includes('countdown') && selectedGroceryListItem.results"
+        <div *ngIf="selectedSupermarkets.includes(SupermarketEnum.COUNTDOWN) && selectedGroceryListItem.results"
             class="supermarket-container">
             <div class="supermarket-name">Countdown</div>
-            <div *ngIf="selectedGroceryListItem.results.countdown && selectedGroceryListItem.results.countdown.length"
+            <div *ngIf="selectedGroceryListItem.results.COUNTDOWN && selectedGroceryListItem.results.COUNTDOWN.length"
                 class="supermarket-card-container">
-                <app-supermarket-item-card *ngFor="let item of selectedGroceryListItem.results.countdown[0]"
+                <app-supermarket-item-card *ngFor="let item of selectedGroceryListItem.results.COUNTDOWN"
                     [selected]="isSelectedGroceryListInfo(item.productCode, item.supermarket)"
                     (selectedGroceryListItemEvent)="selectGroceryListItemInfo($event)" [data]="item" />
             </div>
-            <div *ngIf="selectedGroceryListItem!.results.countdown?.length == 0;" class="noResultsMessage">
+            <div *ngIf="selectedGroceryListItem!.results.COUNTDOWN?.length == 0;" class="noResultsMessage">
                 No Results</div>
         </div>
-        <div *ngIf="selectedSupermarkets.includes('newworld') && selectedGroceryListItem.results"
+        <div *ngIf="selectedSupermarkets.includes(SupermarketEnum.NEW_WORLD) && selectedGroceryListItem.results"
             class="supermarket-container">
             <div class="supermarket-name">New World</div>
-            <div *ngIf="selectedGroceryListItem.results.newworld && selectedGroceryListItem.results.newworld.length"
+            <div *ngIf="selectedGroceryListItem.results.NEW_WORLD && selectedGroceryListItem.results.NEW_WORLD.length"
                 class="supermarket-card-container">
-                <app-supermarket-item-card *ngFor="let item of selectedGroceryListItem.results.newworld[0]"
+                <app-supermarket-item-card *ngFor="let item of selectedGroceryListItem.results.NEW_WORLD"
                     [selected]="isSelectedGroceryListInfo(item.productCode, item.supermarket)"
                     (selectedGroceryListItemEvent)="selectGroceryListItemInfo($event)" [data]="item" />
             </div>
-            <div *ngIf="selectedGroceryListItem!.results.newworld?.length == 0;" class="noResultsMessage">
+            <div *ngIf="selectedGroceryListItem!.results.NEW_WORLD?.length == 0;" class="noResultsMessage">
                 No Results</div>
         </div>
     </div>

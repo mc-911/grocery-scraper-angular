@@ -1,7 +1,7 @@
 import { Component, ElementRef, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { GroceryListItemData, SupermarketEnum } from '../grocery-list-item/grocery-list-item.component';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
-import { GroceryItemData, GroceryService } from '../grocery.service';
+import { GroceryItemData, GrocerySearchCategories, GrocerySearchOrders, GroceryService, GrocerySearchQuery, GrocerySearchResponseSingle } from '../grocery.service';
 import { LocationService } from '../location.service';
 import { EMPTY, catchError } from 'rxjs';
 import { PacknSaveSvgComponent } from '../packn-save-svg/packn-save-svg.component';
@@ -13,6 +13,7 @@ import { SupermarketItemCardComponent } from '../supermarket-item-card/supermark
 import { TotalContainerComponent } from '../total-container/total-container.component';
 import { AuthService } from '../auth.service';
 import { environment } from '../../environments/environment';
+import { DropdownCheckboxComponent } from "../dropdown-checkbox/dropdown-checkbox.component";
 
 export enum searchStateEnum {
   NO_SEARCH,
@@ -23,16 +24,14 @@ export enum searchStateEnum {
 @Component({
   selector: 'app-grocery-list-search',
   standalone: true,
-  imports: [ReactiveFormsModule, PacknSaveSvgComponent, NewWorldSvgComponent, CountdownSvgComponent, DropdownComponent, NgSwitch, SupermarketItemCardComponent, NgIf, NgSwitchCase, TotalContainerComponent, NgFor],
+  imports: [ReactiveFormsModule, PacknSaveSvgComponent, NewWorldSvgComponent, CountdownSvgComponent, DropdownComponent, NgSwitch, SupermarketItemCardComponent, NgIf, NgSwitchCase, TotalContainerComponent, NgFor, DropdownCheckboxComponent],
   templateUrl: './grocery-list-search.component.html',
   styleUrl: './grocery-list-search.component.css'
 })
 export class GroceryListSearchComponent {
   @Input({ required: true }) selectedGroceryListItem!: GroceryListItemData;
-  categories = [{ name: 'General', value: 'GENERAL' }, { name: 'Beef', value: 'BEEF' }, { name: 'Lamb', value: 'LAMB' }, { name: 'Pork', value: 'PORK' }, { name: 'Chicken', value: 'CHICKEN' }, { name: 'Vegetable', value: 'VEGETABLE' }, { name: 'Fruit', value: 'FRUIT' }, { name: 'Eggs', value: 'EGGS' }]
-  sortingOptions = [{ name: "Popularity", value: "POPULARITY" }, { name: 'Price - Low to High', value: 'ASC' }, { name: 'Price - High to Low', value: 'DESC' }]
-  selectedCategory = ''
-  selectedSort = ''
+  categories = [{ name: 'General', value: GrocerySearchCategories.GENERAL }, { name: 'Beef', value: GrocerySearchCategories.BEEF }, { name: 'Lamb', value: GrocerySearchCategories.LAMB }, { name: 'Pork', value: GrocerySearchCategories.PORK }, { name: 'Chicken', value: GrocerySearchCategories.CHICKEN }, { name: 'Vegetable', value: GrocerySearchCategories.VEGETABLE }, { name: 'Fruit', value: GrocerySearchCategories.FRUIT }, { name: 'Eggs', value: GrocerySearchCategories.EGGS }]
+  sortingOptions = [{ name: "Popularity", value: GrocerySearchOrders.POPULARITY }, { name: 'Price - Low to High', value: GrocerySearchOrders.ASC }, { name: 'Price - High to Low', value: GrocerySearchOrders.DESC }]
   selectedSupermarkets: string[] = []
   searchQuery = new FormControl('');
   newGroceryListItemInfo: GroceryItemData | null = null
@@ -54,8 +53,6 @@ export class GroceryListSearchComponent {
   }
 
   ngOnChanges() {
-    this.selectedCategory = this.categories[0].value
-    this.selectedSort = this.sortingOptions[0].value
     this.selectedSupermarkets = this.groceryService.selectedSupermarkets
     this.searchQuery.setValue(this.selectedGroceryListItem.searchQuery)
   }
@@ -89,12 +86,23 @@ export class GroceryListSearchComponent {
     if (errors.length == 0 && this.selectedGroceryListItem && searchQuery) {
       this.selectedGroceryListItem.searchQuery = searchQuery;
       this.selectedGroceryListItem.searchState = searchStateEnum.LOADING;
-      this.groceryService.grocerySearch(searchQuery, this.selectedSupermarkets, this.selectedSort, this.selectedCategory, currentLocation!.latitude, currentLocation!.longitude).pipe(catchError(() => {
+      let queryObj: GrocerySearchQuery = { "query": searchQuery, categories: this.selectedGroceryListItem.categories, order: this.selectedGroceryListItem.searchOrder }
+      this.groceryService.grocerySearch([queryObj], this.selectedSupermarkets, currentLocation!.latitude, currentLocation!.longitude).pipe(catchError(() => {
         console.log("Handle this error")
         return EMPTY;
-      })).subscribe((resp) => {
+      })).subscribe((response) => {
         if (this.selectedGroceryListItem) {
-          this.selectedGroceryListItem.results = resp
+          const singleResult: GrocerySearchResponseSingle = {}
+          if (SupermarketEnum.PAKNSAVE in response) {
+            singleResult[SupermarketEnum.PAKNSAVE] = response[SupermarketEnum.PAKNSAVE]![0]
+          }
+          if (SupermarketEnum.NEW_WORLD in response) {
+            singleResult[SupermarketEnum.NEW_WORLD] = response[SupermarketEnum.NEW_WORLD]![0]
+          }
+          if (SupermarketEnum.COUNTDOWN in response) {
+            singleResult[SupermarketEnum.COUNTDOWN] = response[SupermarketEnum.COUNTDOWN]![0]
+          }
+          this.selectedGroceryListItem.results = singleResult
           this.selectedGroceryListItem.searchState = searchStateEnum.SEARCHED;
           this.groceryService.updateGroceryListItem({ groceryListItemId: this.selectedGroceryListItem.groceryListItemId, searchQuery }).pipe(catchError(() => {
             console.log("Failed to update Grocery List Item!");
@@ -107,17 +115,49 @@ export class GroceryListSearchComponent {
       this.addNotificationEvent.emit(errors)
     }
   }
-  public toggleSupermarket(event: Event, supermarket: string) {
+  public toggleSupermarket(event: Event, supermarket: SupermarketEnum) {
     this.groceryService.toggleSupermarket(supermarket)
     this.selectedSupermarkets = this.groceryService.selectedSupermarkets
   }
 
   public selectCategory(index: number) {
-    this.selectedCategory = this.categories[index].value
+    const newSelectedCategory = this.categories[index].value
+    console.log(newSelectedCategory);
+    let newList = [...this.selectedGroceryListItem.categories]
+    const categoryIndex = newList.indexOf(newSelectedCategory)
+    if (newSelectedCategory !== GrocerySearchCategories.GENERAL) {
+      if (categoryIndex != -1) {
+        if (newList.length == 1) {
+          newList = [GrocerySearchCategories.GENERAL]
+        } else {
+          newList.splice(categoryIndex, 1);
+        }
+      } else {
+        const generalIndex = newList.indexOf(GrocerySearchCategories.GENERAL)
+        if (generalIndex != -1) {
+          newList.splice(generalIndex, 1);
+        }
+        newList.push(newSelectedCategory);
+      }
+    } else {
+      newList = [GrocerySearchCategories.GENERAL]
+    }
+    this.groceryService.updateGroceryListItem({ categories: newList, groceryListItemId: this.selectedGroceryListItem.groceryListItemId }).pipe(catchError(() => {
+      //Handle this error
+      return EMPTY
+    })).subscribe((response) => {
+      this.selectedGroceryListItem.categories = newList
+    })
   }
 
   public selectSort(index: number) {
-    this.selectedSort = this.sortingOptions[index].value
+    const newSelectedSort = this.sortingOptions[index].value
+    this.groceryService.updateGroceryListItem({ order: newSelectedSort, groceryListItemId: this.selectedGroceryListItem.groceryListItemId }).pipe(catchError(() => {
+      //Handle this error
+      return EMPTY
+    })).subscribe((response) => {
+      this.selectedGroceryListItem.searchOrder = newSelectedSort
+    })
   }
   public isSelectedGroceryListInfo(productCode: string, supermarket: SupermarketEnum) {
     if (this.selectedGroceryListItem) {
@@ -192,5 +232,12 @@ export class GroceryListSearchComponent {
       this.setQuantityDialog.nativeElement.close()
     }
     this.newGroceryListItemInfoQuantity.setValue(1)
+  }
+  public get selectedCategoriesIndexArray() {
+    return this.selectedGroceryListItem.categories.map((item) => this.categories.findIndex((e) => e.value == item))
+  }
+
+  public get selectedSortIndex() {
+    return this.sortingOptions.findIndex((item) => item.value == this.selectedGroceryListItem.searchOrder)
   }
 }

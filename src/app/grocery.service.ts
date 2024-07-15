@@ -17,9 +17,14 @@ export type GroceryItemData = {
   quantity?: number
 }
 export interface GrocerySearchResponse {
-  paknsave?: GroceryItemData[][]
-  countdown?: GroceryItemData[][]
-  newworld?: GroceryItemData[][]
+  PAKNSAVE?: GroceryItemData[][]
+  COUNTDOWN?: GroceryItemData[][]
+  NEW_WORLD?: GroceryItemData[][]
+}
+export interface GrocerySearchResponseSingle {
+  PAKNSAVE?: GroceryItemData[]
+  COUNTDOWN?: GroceryItemData[]
+  NEW_WORLD?: GroceryItemData[]
 }
 export interface GroceryListInfo {
   name: string,
@@ -30,13 +35,40 @@ export interface CreateGroceryListResponse {
 }
 export interface getGroceryListResponse {
   name: string,
-  items: { name: string, searchQuery: string, groceryListItemId: string, supermarketInformation: GroceryItemData[] }[]
+  items: { name: string, searchQuery: string, groceryListItemId: string, supermarketInformation: GroceryItemData[], categories: GrocerySearchCategories[], order: GrocerySearchOrders }[]
 }
 export interface updateGroceryListItemBody {
   name?: string,
   searchQuery?: string
+  categories?: GrocerySearchCategories[]
+  order?: GrocerySearchOrders
   groceryListItemId: string
 }
+
+
+export enum GrocerySearchCategories {
+  GENERAL = 'GENERAL',
+  BEEF = 'BEEF',
+  LAMB = 'LAMB',
+  PORK = 'PORK',
+  CHICKEN = 'CHICKEN',
+  VEGETABLE = 'VEGETABLE',
+  FRUIT = 'FRUIT',
+  EGGS = 'EGGS'
+}
+
+export enum GrocerySearchOrders {
+  POPULARITY = "POPULARITY",
+  ASC = 'ASC',
+  DESC = 'DESC'
+}
+export interface GrocerySearchQuery {
+  query: string;
+  order: GrocerySearchOrders;
+  categories: GrocerySearchCategories[];
+}
+
+
 @Injectable({
   providedIn: 'root'
 })
@@ -58,9 +90,9 @@ export class GroceryService {
     }
   }
 
-  grocerySearch(query: string, selectedSupermarkets: string[], order: string, category: string, latitude: number, longitude: number) {
-    const url = environment.apiUrl + `/grocery-search?query=${query}&supermarkets=${selectedSupermarkets}&order=${order}&category=${category}&longitude=${longitude}&latitude=${latitude}`
-    return this.http.get<GrocerySearchResponse>(url).pipe(catchError(this.handleGrocerySearchError))
+  grocerySearch(queries: GrocerySearchQuery[], supermarkets: string[], latitude: number, longitude: number) {
+    const url = environment.apiUrl + `/grocery-search`
+    return this.http.post<GrocerySearchResponse>(url, { queries, supermarkets, latitude, longitude }).pipe(catchError(this.handleGrocerySearchError))
   }
 
   handleCreateGroceryListError(error: HttpErrorResponse) {
@@ -98,9 +130,9 @@ export class GroceryService {
     return this.http.get<getGroceryListResponse>(url).pipe(catchError(this.handleGetGroceryListError))
   }
 
-  createGroceryListItem(name: string, groceryListId: string, searchQuery: string) {
+  createGroceryListItem(name: string, groceryListId: string, searchQuery: string, categories: GrocerySearchCategories[], order: GrocerySearchOrders) {
     const url = environment.apiUrl + '/grocery-list-item'
-    return this.http.post<CreateGroceryListResponse>(url, { name, groceryListId, searchQuery }).pipe(catchError(this.handleCreateGroceryListError))
+    return this.http.post<CreateGroceryListResponse>(url, { name, groceryListId, searchQuery, order, categories }).pipe(catchError(this.handleCreateGroceryListError))
   }
 
   updateGroceryListItem(body: updateGroceryListItemBody) {

@@ -4,20 +4,22 @@ import { CountdownSvgComponent } from '../countdown-svg/countdown-svg.component'
 import { NgFor, NgSwitch, NgSwitchCase } from '@angular/common';
 import { NewWorldSvgComponent } from '../new-world-svg/new-world-svg.component';
 import { searchStateEnum } from '../grocery-list-search/grocery-list-search.component';
-import { GroceryItemData, GrocerySearchResponse } from '../grocery.service';
+import { GroceryItemData, GrocerySearchCategories, GrocerySearchOrders, GrocerySearchResponseSingle } from '../grocery.service';
 
 export enum SupermarketEnum {
-  PAKNSAVE = "paknsave",
-  COUNTDOWN = "countdown",
-  NEW_WORLD = "newworld"
+  PAKNSAVE = "PAKNSAVE",
+  COUNTDOWN = "COUNTDOWN",
+  NEW_WORLD = "NEW_WORLD"
 }
 export type GroceryListItemData = {
   name: string,
   supermarketDataDict: { [key: string]: GroceryItemData },
-  results?: GrocerySearchResponse,
+  results?: GrocerySearchResponseSingle,
   searchState: searchStateEnum,
-  searchQuery: string
-  groceryListItemId: string
+  searchQuery: string,
+  groceryListItemId: string,
+  searchOrder: GrocerySearchOrders,
+  categories: GrocerySearchCategories[]
 }
 @Component({
   selector: 'app-grocery-list-item',
@@ -34,7 +36,7 @@ export class GroceryListItemComponent {
   class = ''
   @Output() removeItemEvent = new EventEmitter<number>();
   @Output() selectItemEvent = new EventEmitter<number>();
-  supermarketClassList = { "paknsave": 'paknsave-bg', "countdown": 'countdown-bg', "newworld": 'newworld-bg' }
+  supermarketClassList = { "PAKNSAVE": 'paknsave-bg', "COUNTDOWN": 'countdown-bg', "NEW_WORLD": 'new_world-bg' }
 
 
   public get SupermarketEnum() {

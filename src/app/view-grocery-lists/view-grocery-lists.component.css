@@ -15,9 +15,9 @@
     gap: 4px;
 }
 
-.groceryListsContainer>div {
+.groceryList {
     width: 90%;
-    background-color: var(--primary-color);
+    background-color: var(--secondary-color);
     height: 70px;
     display: flex;
     flex-direction: row;
