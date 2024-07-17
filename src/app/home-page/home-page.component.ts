@@ -17,7 +17,7 @@ import { CreateGroceryListComponent } from '../create-grocery-list/create-grocer
   styleUrl: './home-page.component.css'
 })
 export class HomePageComponent {
-  firstName = "Mustapha"
+  firstName = ""
 
 
 
@@ -28,6 +28,14 @@ export class HomePageComponent {
   constructor(private userService: UserService) { }
 
 
+  ngOnInit() {
+    this.userService.getUserInfo(this.userService.userId).pipe(catchError(() => {
+      //handle this
+      return EMPTY
+    })).subscribe((response) => {
+      this.firstName = response['first name']
+    })
+  }
 
 
   /**

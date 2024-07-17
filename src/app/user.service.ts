@@ -13,6 +13,10 @@ interface LoginResponse {
 interface RegistrationResponse {
 
 }
+interface GetUserResponse {
+  "first name": string,
+  "last name": string
+}
 enum LoginErrorCode {
   NOT_VERIFIED = 0,
   INVALID_EMAIL_OR_PASSWORD = 1
@@ -123,6 +127,11 @@ export class UserService {
   sendResetPasswordEmail(email: string) {
     const url = environment.apiUrl + '/resetPasswordEmail'
     return this.http.post<any>(url, { email }).pipe(catchError(this.handleDeleteUserError))
+  }
+
+  getUserInfo(id: string) {
+    const url = environment.apiUrl + '/user'
+    return this.http.get<GetUserResponse>(url + "/" + id).pipe(catchError(this.handleDeleteUserError))
   }
 
 }
