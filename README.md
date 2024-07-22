@@ -1,5 +1,7 @@
 # GroceryScraper
 
+This is the Angular App (front-end) for my grocery list web app, "Grocery List Plus."
+
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 17.2.0.
 
 ## Development server
