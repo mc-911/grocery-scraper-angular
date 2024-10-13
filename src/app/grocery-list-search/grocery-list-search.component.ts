@@ -36,6 +36,7 @@ export class GroceryListSearchComponent {
   searchQuery = new FormControl('');
   newGroceryListItemInfo: GroceryItemData | null = null
   newGroceryListItemInfoQuantity = new FormControl(1);
+  disallowedSupermarkets = [SupermarketEnum.PAKNSAVE, SupermarketEnum.NEW_WORLD]
   @Output() addNotificationEvent = new EventEmitter<string[]>();
   @Output() returnBtnClickEvent = new EventEmitter<boolean>();
 
@@ -49,6 +50,12 @@ export class GroceryListSearchComponent {
     if (!environment.showCountdown && this.selectedSupermarkets.includes(SupermarketEnum.COUNTDOWN)) {
       this.groceryService.toggleSupermarket(SupermarketEnum.COUNTDOWN)
       this.selectedSupermarkets = this.groceryService.selectedSupermarkets
+    }
+    if (this.selectedSupermarkets.includes(SupermarketEnum.PAKNSAVE)) {
+      this.groceryService.toggleSupermarket(SupermarketEnum.PAKNSAVE)
+    }
+    if (this.selectedSupermarkets.includes(SupermarketEnum.NEW_WORLD)) {
+      this.groceryService.toggleSupermarket(SupermarketEnum.NEW_WORLD)
     }
   }
 

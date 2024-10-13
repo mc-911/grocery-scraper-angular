@@ -52,6 +52,30 @@
     fill: var(--text-color);
 }
 
+.unavaliable {
+    cursor: default;
+    opacity: 50%;
+}
+
+.tooltip {
+    position: absolute;
+    background-color: var(--text-color);
+    color: var(--secondary-color);
+    left: 0px;
+    right: 0px;
+    bottom: 0px;
+    margin: auto;
+    top: 60px;
+    width: 90px;
+    height: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 8px;
+    z-index: 1;
+    visibility: hidden;
+}
+
 .supermarket-btn {
     height: 35px;
     width: 80px;
@@ -61,12 +85,21 @@
     align-items: center;
     border-radius: 10px;
     cursor: pointer;
+    position: relative;
+}
+
+.supermarket-btn:hover .tooltip {
+    visibility: visible;
 }
 
 .supermarket-btn-container {
     display: flex;
     flex-direction: row;
     gap: 4px;
+}
+
+.noclick {
+    cursor: default;
 }
 
 .search-options-container {

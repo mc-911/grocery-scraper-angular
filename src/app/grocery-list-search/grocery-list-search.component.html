@@ -17,20 +17,22 @@
     <div class="search-options-container">
 
         <div class="supermarket-btn-container">
-            <div class="paknsave-bg supermarket-btn"
-                [class]="selectedSupermarkets.includes(this.SupermarketEnum.PAKNSAVE) ? '' : 'disabled' "
-                (mouseup)="toggleSupermarket($event, this.SupermarketEnum.PAKNSAVE)">
-                <app-packn-save-svg class="price-logo"></app-packn-save-svg>
+            <div class="paknsave-bg supermarket-btn disabled noclick">
+                <app-packn-save-svg class="price-logo unavaliable"></app-packn-save-svg>
+                <div class="tooltip">
+                    Unavaliable
+                </div>
             </div>
             <div *ngIf="showCountdown" class="countdown-bg supermarket-btn"
                 [class]="selectedSupermarkets.includes(this.SupermarketEnum.COUNTDOWN) ? '' : 'disabled' "
                 (mouseup)="toggleSupermarket($event, this.SupermarketEnum.COUNTDOWN)">
                 <app-countdown-svg class="price-logo"></app-countdown-svg>
             </div>
-            <div class="new_world-bg supermarket-btn"
-                [class]="selectedSupermarkets.includes(this.SupermarketEnum.NEW_WORLD) ? '' : 'disabled' "
-                (mouseup)="toggleSupermarket($event, this.SupermarketEnum.NEW_WORLD)">
-                <app-new-world-svg class="price-logo"></app-new-world-svg>
+            <div class="new_world-bg supermarket-btn disabled noclick">
+                <app-new-world-svg class="price-logo unavaliable"></app-new-world-svg>
+                <div class="tooltip">
+                    Unavaliable
+                </div>
             </div>
         </div>
         <div class="sort-by-category-container">
